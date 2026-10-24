@@ -1,0 +1,86 @@
+{
+  "mode": "Playwright Chromium via set_content, mocked localStorage, NOT actual iPhone or real persistent storage",
+  "results": [
+    {
+      "test": "起動時JSエラーなし",
+      "pass": true
+    },
+    {
+      "test": "ルート作成4段階のステップ1表示",
+      "pass": true
+    },
+    {
+      "test": "運転記録は初期折りたたみ",
+      "pass": true
+    },
+    {
+      "test": "空の目的地で次に進まない",
+      "pass": true
+    },
+    {
+      "test": "基本情報から次へ",
+      "pass": true
+    },
+    {
+      "test": "地点追加",
+      "pass": true
+    },
+    {
+      "test": "地点からコツへ",
+      "pass": true
+    },
+    {
+      "test": "確認画面へ",
+      "pass": true
+    },
+    {
+      "test": "確認画面に入力反映",
+      "pass": true
+    },
+    {
+      "test": "戻っても入力保持",
+      "pass": true
+    },
+    {
+      "test": "保存成功画面",
+      "pass": true
+    },
+    {
+      "test": "保存データの構造を維持",
+      "pass": true
+    },
+    {
+      "test": "localStorageへ保存",
+      "pass": true
+    },
+    {
+      "test": "新規作成で初期化",
+      "pass": true
+    },
+    {
+      "test": "ステップ2・3はスキップ可能",
+      "pass": true
+    },
+    {
+      "test": "経由地なしでも保存",
+      "pass": true
+    },
+    {
+      "test": "既存ルートを編集できる",
+      "pass": true
+    },
+    {
+      "test": "編集保存で重複しない",
+      "pass": true
+    },
+    {
+      "test": "停車後に記録ボタンで折りたたみ展開",
+      "pass": true
+    },
+    {
+      "test": "操作中の例外なし",
+      "pass": true
+    }
+  ],
+  "page_errors": []
+}

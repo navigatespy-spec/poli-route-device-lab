@@ -1,20 +1,21 @@
-POLI-ROUTE shell-44｜iPhone実機検証専用（2026-10-23）
+POLI-ROUTE shell-45｜iPhone実機UI検証専用（2026-10-24）
 
-【公開禁止データ】
-このZIPには後輩向け施設429件・14ルール・30降車メモ等の非公開データを含めていません。
-データファイルは公開GitHubへアップロードしないでください。
+【変更点】
+ルート保存を4ステップに再設計：①行き先 ②経由地（任意） ③道路のコツ（任意） ④確認して保存。
+「今日の運転」の操作は変更せず、配色を白・青に統一。
+保存済みルートの編集・呼び出し・バックアップ、走行記録などは従来データ構造を維持。
 
-【試す前に】
-1. 専用の空のGitHubリポジトリ（例: poli-route-device-lab）を作成。
-2. このZIPのファイルをリポジトリのルートにアップロード（ZIPそのものをアップロードせず展開）。
-3. Settings -> Pages -> Deploy from a branch -> main -> /(root) -> Save。
-4. HTTPSのGitHub Pages URLが表示されたら、iPhoneのSafariで /device-check.html を開く。
-5. device-check.html の手順・チェックリストに沿って実機操作。
-6. チェックリスト結果をコピーして開発者へ共有（施設名・住所・実走行情報は含めない）。
+【GitHub Pages更新】
+1. 先にテスト版のJSONバックアップをファイルに保存する。
+2. ZIPを展開する。
+3. GitHub Desktopのpoli-route-device-labのローカルフォルダの中身を、展開した中身で置き換える。'.git'フォルダは削除しない。
+4. GitHub DesktopでCommit to main → Push origin。
+5. iPhoneのSafari/PWAを開き、変更が見えない場合はSafari再読込・PWA再起動で確認する。
 
-注意：manifest・Service Worker は HTTPS（またはlocalhost）でのみ期待どおり動作します。
-Safariからのホーム画面追加は、同じ端末でも保存領域が別になる場合があります。
-オフラインではGoogleマップが使えません。安全のため実際の運転で試さないでください。
-バックアップは「ダウンロード開始」だけでは確認済みにせず、iPhoneのファイルアプリで存在を確認します。
-検証版の保存キーは poli-route-shell44-device-lab-v1。後輩用本番・旧検証版とは分離します。
-後輩への提供・実走行には使いません。実用化判定は未合格です。
+【保存先】
+shell-44と同じ検証用キー poli-route-shell44-device-lab-v1 を維持し、既に登録したテストデータを引き継ぐ設計。
+後輩専用shell-38の保存キーとデータファイルを含まない。Safariとホーム画面アプリは保存先が異なる場合がある。
+
+【限界】
+iPhone実機の永続保存とGoogleマップの実連携は未検証。後輩の実運転には使用しない。
+ルートの右左折、通りたい・避けたい道路、時間帯はローカルのメモであり、Googleマップに強制できない。

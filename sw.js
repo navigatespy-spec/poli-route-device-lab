@@ -1,5 +1,5 @@
-var CACHE = 'poli-route-shell-44-device-lab';
-var CACHE_PREFIX = 'poli-route-shell-44-device-lab';
+var CACHE = 'poli-route-shell-45-device-lab';
+var CACHE_PREFIX = 'poli-route-shell-45-device-lab';
 var SHELL = [
   './',
   './index.html',
@@ -27,7 +27,7 @@ self.addEventListener('install', function (event) {
 self.addEventListener('activate', function (event) {
   event.waitUntil(caches.keys().then(function (keys) {
     return Promise.all(keys.filter(function (key) {
-      return key !== CACHE && key.indexOf(CACHE_PREFIX) === 0;
+      return key !== CACHE && (key.indexOf(CACHE_PREFIX) === 0 || key === 'poli-route-shell-44-device-lab');
     }).map(function (key) {
       return caches.delete(key);
     }));
