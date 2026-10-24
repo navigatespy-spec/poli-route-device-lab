@@ -1,0 +1,3910 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#0b1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="POLI-ROUTE">
+<title>POLI-ROUTE</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0b1220;color:#e8eef6;color-scheme:dark;-webkit-text-size-adjust:100%}
+html,body{background:#0b1220}
+html{scroll-padding-bottom:calc(128px + env(safe-area-inset-bottom))}
+body{max-width:430px;margin:0 auto;padding:12px 14px calc(128px + env(safe-area-inset-bottom));padding-top:calc(10px + env(safe-area-inset-top));font-size:16px;line-height:1.45}
+h1{font-size:20px;margin:0;letter-spacing:.02em}
+h2{font-size:18px;margin:0 0 8px}
+h3{font-size:16px;margin:12px 0 6px}
+h4{font-size:16px;margin:12px 0 6px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.iconbtn{min-width:44px;min-height:44px;padding:8px 12px;background:transparent;color:#b9cbe0;border:1px solid #345274}
+#settingsBtn.primary{background:#16304c;color:#4c9dff;border-color:#16304c}
+.lead{margin:0 0 8px}
+.warn{color:#e7c27a}
+.times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.times .depart{grid-column:1 / -1;background:#10233d;border-radius:12px;padding:10px 12px}
+.times div{background:#0c1a2d;border-radius:10px;padding:8px}
+.times span{display:block;font-size:16px;color:#93a8c2}
+.times b{display:block;font-size:16px;line-height:1.25;color:#d7ebff;word-break:break-word}
+.times .depart b{font-size:32px;font-weight:800;letter-spacing:.01em}
+.times .depart.is-empty b{font-size:16px;font-weight:650;color:#93a8c2}
+.plan-card{background:#0c1a2d;border-radius:12px;padding:10px 12px;margin:8px 0}
+.plan-card ol{margin:6px 0;padding-left:1.3em}
+.plan-card li{margin:4px 0}
+.plan-card p{margin:4px 0}
+#todayResult h3{font-size:16px;margin:12px 0 4px}
+#todayResult button{width:100%;margin:6px 0}
+#todayResult button.navstart{min-height:52px;font-size:17px;margin:0 0 8px}
+.gaps{margin:8px 0;padding:8px 10px;background:#0c1a2d;border-radius:10px;color:#93a8c2;font-size:16px;line-height:1.55}
+.line{border-top:1px solid #2c415c;padding:8px 0}
+button,input,textarea,select,a,summary{touch-action:manipulation;scroll-margin-top:12px;scroll-margin-bottom:calc(128px + env(safe-area-inset-bottom))}
+button{background:#1c314c;color:#fff;border:0;border-radius:10px;padding:10px 12px;cursor:pointer;min-height:44px;font:inherit}
+button.primary{background:#4c9dff;color:#061018;font-weight:750}
+button.ghost{background:transparent;color:#b9cbe0;border:1px solid #345274}
+input,textarea,select{box-sizing:border-box;width:100%;padding:10px 12px;border-radius:10px;border:1px solid #345274;background:#0c1a2d;color:#fff;margin:2px 0 8px;font:inherit;font-size:16px;min-height:44px}
+textarea{min-height:72px}
+input[type="date"],input[type="time"],input[type="file"]{color-scheme:dark}
+input[type="date"],input[type="time"]{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+input[type="date"]::-webkit-datetime-edit,input[type="time"]::-webkit-datetime-edit,input[type="date"]::-webkit-datetime-edit-fields-wrapper,input[type="time"]::-webkit-datetime-edit-fields-wrapper{min-width:0;max-width:100%;padding:0}
+.panel{background:#142033;border-radius:14px;padding:12px;margin:8px 0}
+.item{padding:10px 0;border-bottom:1px solid #2a3d56}
+.item:last-child{border-bottom:0}
+.muted{color:#93a8c2;font-size:16px;line-height:1.5}
+.note{margin:8px 0;padding:8px 10px;border-radius:10px;font-size:16px;line-height:1.45}
+.note.ok{background:#143528;color:#b7e7c8}
+.note.bad{background:#3a2430;color:#ffb4a8}
+#routes .pair{grid-template-columns:minmax(0,1fr)}
+.clamp{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hidden{display:none}
+.buttons{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.buttons button{font-size:16px;padding:8px 10px;min-height:44px}
+.panel>button{width:100%;margin:4px 0}
+label{font-size:16px;color:#93a8c2}
+.pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.pair>*{min-width:0;max-width:100%}
+.pair input,.pair select{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+@media (max-width:359px){
+.pair{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+.pair.when-narrow{grid-template-columns:minmax(0,1fr)}
+}
+#home .panel{padding:8px 12px}
+#home h2{margin:0 0 6px}
+#home label{display:block;margin:8px 0 4px;line-height:1.3}
+#home h2+label{margin-top:0}
+#home input,#home select{box-sizing:border-box;-webkit-appearance:none;appearance:none;height:46px;min-height:46px;max-height:46px;margin:0;padding:0 12px;border-width:1px;font-size:16px;line-height:44px}
+#home select{padding-right:32px;background-color:#0c1a2d;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath fill='%2393a8c2' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:12px 8px}
+#home input[type="date"],#home input[type="time"]{height:46px;min-height:46px;max-height:46px;padding:0 12px;line-height:44px}
+#home input[type="date"]::-webkit-datetime-edit,#home input[type="time"]::-webkit-datetime-edit{padding:0;line-height:44px;min-height:0}
+#home input[type="date"]::-webkit-calendar-picker-indicator,#home input[type="time"]::-webkit-calendar-picker-indicator{display:block;margin:0}
+#home .pair{gap:8px;margin-top:8px}
+#home .pair label{margin:0 0 4px}
+#home .suggest{margin:4px 0 0}
+#home .panel>button{min-height:48px;margin:10px 0 0}
+#home #todayResult button.navstart{min-height:52px;font-size:17px}
+#home .panel>button.ghost{margin-top:8px}
+#home .panel>.muted{margin:8px 0 0}
+#state{font-size:16px;color:#8fd9a8;margin:0}
+.suggest{background:#0c1a2d;border:1px solid #345274;border-radius:10px;margin:-4px 0 8px;max-height:200px;overflow:auto;-webkit-overflow-scrolling:touch}
+.suggest button{display:block;width:100%;text-align:left;background:#10233a;border-radius:0;margin:0}
+#diagnostics{word-break:break-word}
+#fieldMeasureText{min-height:220px;white-space:pre;overflow:auto}
+#knowhowPreview{white-space:pre-wrap;word-break:break-word;margin:8px 0}
+#knowhowActions.hidden{display:none}
+.chip{display:inline-block;font-size:16px;line-height:1.3;padding:2px 6px;border-radius:6px;margin-right:4px;vertical-align:1px}
+.chip.must{background:#3a2430;color:#ffb4a8}
+.chip.prefer{background:#16304c;color:#b7d7ff}
+.chip.avoid{background:#3a3020;color:#e7c27a}
+.chip.fast{background:#14324a;color:#9fd0ff}
+.chip.cheap{background:#163528;color:#b7e7c8}
+.chip.warnchip{background:#3a3020;color:#e7c27a}
+summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:pointer}
+details:not([open]) > :not(summary){display:none}
+details.panel>summary{margin:-2px 0 4px}
+.tabbar{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:430px;display:flex;gap:2px;background:#0a1424;border-top:1px solid #24344c;padding:4px 6px calc(4px + env(safe-area-inset-bottom));z-index:20}
+.tabbar button{flex:1;min-height:48px;border-radius:10px;background:transparent;color:#93a8c2;font-size:16px;font-weight:650;padding:6px 2px}
+.tabbar button.primary{background:#16304c;color:#4c9dff}
+button:disabled{opacity:.55;cursor:not-allowed;background:#26384c!important;color:#c1cad5!important} .route-selector[aria-pressed="true"]{background:#285c41;color:#e1ffe9} .route-choice-status{font-weight:700}
+#todayResult .drive-next{background:#102b44;border:1px solid #426990;border-radius:12px;padding:12px;margin:10px 0}
+#todayResult .drive-next p{margin:4px 0}
+#todayResult .drive-next strong{color:#dceeff}
+#todayResult .route-quick{display:grid;grid-template-columns:1fr;gap:6px;margin:8px 0}
+#todayResult .route-quick button{margin:0;min-height:48px;text-align:left}
+#todayResult .route-quick button[aria-pressed="true"]{background:#285c41;color:#e1ffe9}
+#todayResult .route-quick .muted{margin:2px 0}
+
+.lab-nav{max-width:430px;margin:0 auto 10px;padding:10px 12px;background:#122744;border:1px solid #396399;border-radius:12px;box-sizing:border-box;display:flex;gap:5px;flex-direction:column;align-items:center;text-align:center}
+.lab-nav a{color:#fff;background:#1768b2;padding:12px 16px;border-radius:10px;display:block;width:100%;box-sizing:border-box;text-decoration:none;font-size:15px;font-weight:750}
+.lab-nav span{font-size:12px;color:#b1c4dd}
+</style>
+</head>
+<body>
+<div style="margin:8px auto;max-width:430px;padding:7px 12px;border-radius:8px;background:#453018;color:#ffdaa3;font-size:14px;font-weight:bold;text-align:center">shell-44 実機確認用｜後輩への配布・実運転には使用しない</div>
+<div class="lab-nav"><a href="device-check.html">📱 実機テスト手順・判定シートへ</a><span>検証コピー／後輩の本番アプリとは別</span></div>
+<header class="top">
+<h1>POLI-ROUTE</h1>
+<button type="button" id="settingsBtn" class="iconbtn" onclick="tab('admin')">設定</button>
+</header>
+<p id="state" class="muted">起動準備中…</p>
+
+<section id="home">
+<div class="panel">
+<h2>今日の運転</h2>
+<label for="todayDest">目的地</label>
+<input id="todayDest" list="placeSuggestions" placeholder="施設名または住所" autocomplete="off">
+<datalist id="placeSuggestions"></datalist>
+<div id="todaySuggest" class="suggest hidden"></div>
+<div class="pair when-narrow">
+<div>
+<label for="todayDate">到着日</label>
+<input id="todayDate" type="date">
+</div>
+<div>
+<label for="todayTime">到着時刻</label>
+<input id="todayTime" type="time" value="18:00">
+</div>
+</div>
+<button type="button" class="primary" onclick="createDrivePlan()">運転プランを作成</button>
+<details id="todayOptions">
+<summary>出発地・余裕・走行時間</summary>
+<label for="todayOrigin">出発地</label>
+<input id="todayOrigin" placeholder="保存した出発拠点" autocomplete="off">
+<label for="todayBuffer">余裕</label>
+<select id="todayBuffer">
+<option value="0">急ぎ 0分</option>
+<option value="10" selected>通常 10分</option>
+<option value="20">余裕 20分</option>
+<option value="30">かなり余裕 30分</option>
+</select>
+<label for="todayDrive">走行時間（分）</label>
+<input id="todayDrive" type="number" min="1" placeholder="実績が足りないときだけ" inputmode="numeric">
+<p class="muted">地図で確認した分数が最優先。過去実績は同じ出発地・目的地・ルート・道路種別・曜日区分・出発時間帯が揃う場合だけ参考計算します。条件が違うときは自動計算しません。</p>
+</details>
+</div>
+<div id="todayResult" class="panel"><p class="muted">目的地と到着日時を入れて、運転プランを作成します。</p></div>
+<div id="planner" class="hidden">
+<input id="origin" placeholder="出発住所" autocomplete="off">
+<input id="destination" placeholder="施設名または住所" autocomplete="off">
+<div id="destSuggest" class="suggest hidden"></div>
+<input id="arrivalDate" type="date">
+<input id="arrivalTime" type="time" value="18:00">
+<input id="driveMinutes" type="number" min="1" inputmode="numeric">
+<select id="bufferMinutes">
+<option value="0">急ぎ 0分</option>
+<option value="10" selected>通常 10分</option>
+<option value="20">余裕あり 20分</option>
+<option value="30">かなり余裕 30分</option>
+</select>
+<button type="button" onclick="calculateDeparture()">出発時刻を計算</button>
+<button type="button" onclick="plannerMap()">Googleマップで所要時間を確認</button>
+<div id="departureResult"></div>
+</div>
+</section>
+
+<section id="places" class="admin-only hidden">
+<div class="panel">
+<h2>設定</h2>
+<p class="muted">施設、運転ルール、取り込み、バックアップ、診断です。ここを開いても権限は変わりません。</p>
+<p id="dataCounts" class="muted"></p>
+<div class="panel" style="margin:10px 0;padding:12px"><strong>保存先の確認（診断）</strong><p class="muted" id="storageContext">確認中</p><button type="button" onclick="checkStorageContext()">保存先を確認</button><p class="muted">件数と保存状態だけを表示します。施設名・住所・運転履歴は表示・送信しません。Safariとホーム画面アプリでは保存先が異なる場合があります。</p></div>
+<p id="diagnostics" class="muted"></p>
+<p class="muted">データはこの端末だけに保存します。サーバーへは送りません。位置情報は取りません。走行時間の提案は過去の実績だけで、リアルタイムの交通情報ではありません。右折・左折・必須道路はGoogleマップへ送れません。</p>
+</div>
+<div class="panel">
+<label for="search">施設を探す</label>
+<input id="search" placeholder="施設名・住所" autocomplete="off" oninput="render()">
+<p id="count" class="muted"></p>
+<div id="list"></div>
+</div>
+<details class="panel" id="placeEditor">
+<summary>施設を追加・編集</summary>
+<label for="pn">施設名</label>
+<input id="pn" autocomplete="off">
+<label for="pa">住所</label>
+<input id="pa" autocomplete="off">
+<label for="pw">方面</label>
+<input id="pw" placeholder="未登録のまま残せます" autocomplete="off">
+<label for="paAlias">別の呼び方（1行に1つ）</label>
+<textarea id="paAlias" placeholder="表記が違うときだけ"></textarea>
+<label for="pm">車寄せ・進入・注意</label>
+<textarea id="pm"></textarea>
+<button type="button" class="primary" id="placeSave" onclick="addPlace()">施設を保存</button>
+<button type="button" class="ghost" onclick="clearPlaceForm()">入力をクリア</button>
+</details>
+<details class="panel" id="parkEditor">
+<summary>乗降・駐車場を追加</summary>
+<p class="muted">施設に紐づけて保存します。節約と急ぎは分けて登録できます。料金は確認した金額だけを記録し、満空は記録しません。</p>
+<label for="parkPlace">対象施設名</label>
+<input id="parkPlace" placeholder="施設名" autocomplete="off">
+<div id="parkSuggest" class="suggest hidden"></div>
+<label for="parkAddress">施設の住所（任意）</label>
+<input id="parkAddress" autocomplete="off">
+<label for="dropoff">乗降位置・徒歩案内</label>
+<textarea id="dropoff" placeholder="例：正面の車寄せ。停車規制は現地確認"></textarea>
+<label for="dropWalk">入口までの徒歩時間（分・確認済みの場合）</label>
+<input id="dropWalk" type="number" min="0" max="120" inputmode="numeric" placeholder="未確認なら空欄">
+<label for="dropCrossing">車道の横断</label>
+<select id="dropCrossing"><option value="unknown">未確認</option><option value="no">横断なし</option><option value="yes">横断あり</option></select>
+<label for="dropApproach">進入方向・停車可否の根拠（任意）</label>
+<input id="dropApproach" placeholder="現地確認した情報のみ" autocomplete="off">
+<label for="dropStatus">乗降場所の確認状況</label>
+<select id="dropStatus">
+<option>要現地確認</option>
+<option>現地確認済み</option>
+<option>利用不可</option>
+</select>
+<label for="parkName">駐車場名</label>
+<input id="parkName" placeholder="例：〇〇パーキング" autocomplete="off">
+<label for="parkLocation">駐車場住所</label>
+<input id="parkLocation" autocomplete="off">
+<label for="parkMode">用途</label>
+<select id="parkMode">
+<option value="cheap">節約</option>
+<option value="fast">急ぎ</option>
+<option value="both">節約と急ぎの両方</option>
+</select>
+<div class="pair">
+<div>
+<label for="parkPrice">参考料金（円）</label>
+<input id="parkPrice" type="number" min="0" placeholder="未確認は空欄" inputmode="numeric">
+</div>
+<div>
+<label for="parkDuration">対象時間（分）</label>
+<input id="parkDuration" type="number" min="1" value="120" inputmode="numeric">
+</div>
+</div>
+<label for="parkChecked">料金確認日</label>
+<input id="parkChecked" type="date">
+<label for="parkMemo">入庫・徒歩の注意</label>
+<textarea id="parkMemo"></textarea>
+<button type="button" class="primary" onclick="saveParking()">乗降・駐車を保存</button>
+<p class="muted">路上の違法な駐停車は案内しません。標識と施設の指示を優先してください。</p>
+</details>
+<div class="panel">
+<label for="parkSearch">登録済みの乗降・駐車場</label>
+<input id="parkSearch" placeholder="施設・駐車場名" autocomplete="off" oninput="renderParking()">
+<div id="parkingList"></div>
+</div>
+<div class="panel">
+<p class="muted">新しい候補はPPPark!で検索します。施設名は自動では渡しません。</p>
+<button type="button" onclick="openUrl('https://pppark.com/')">PPPark!検索サイトを開く</button>
+</div>
+</section>
+
+<section id="routes" class="hidden">
+<div class="panel" id="routeEditor">
+<h2>ルートを保存</h2>
+<p class="muted">行き先と通った道を入力して、最後に「ルートを保存」を押すだけ。</p>
+<label for="rt">目的地</label>
+<input id="rt" placeholder="施設名または住所" autocomplete="off">
+<h3>通った地点 <span class="muted">（任意）</span></h3>
+<label for="rp">道路・交差点</label>
+<input id="rp" placeholder="交差点・道路名" autocomplete="off">
+<div id="rpSuggest" class="suggest hidden"></div>
+<div class="pair">
+<div>
+<label for="rpTurn">曲がり方</label>
+<select id="rpTurn">
+<option>右折</option>
+<option>左折</option>
+<option selected>直進</option>
+<option>通過</option>
+</select>
+</div>
+<div>
+<label for="rpPriority">通り方</label>
+<select id="rpPriority">
+<option value="must">必ず通る</option>
+<option value="prefer" selected>優先</option>
+</select>
+</div>
+</div>
+<button type="button" onclick="addDraftPoint()">2つ目以降の地点を追加</button>
+<div id="draftPoints"></div>
+<label for="rm">次回の注意事項</label>
+<textarea id="rm" rows="2" placeholder="なければ空欄"></textarea>
+<button type="button" class="primary" id="routeSave" onclick="addRoute()">ルートを保存</button>
+<p id="routeStatus" class="note hidden"></p>
+
+<button type="button" class="ghost" onclick="clearRouteForm()">入力をクリア</button>
+<details id="routeDetail">
+<summary>詳細編集（出発地・時間帯・道路の指定）</summary>
+<p class="muted">保存後に端末のデータを読み直して確認します。Safariとホーム画面アプリは保存先が異なる場合があります。</p>
+<p class="muted">ルート名、出発地、優先道路、回避道路、時間帯です。右折・左折・必須は地図へ渡せません。</p>
+<label for="rn">ルート名</label>
+<input id="rn" placeholder="空欄なら目的地から付けます" autocomplete="off">
+<label for="rf">出発地</label>
+<input id="rf" placeholder="空欄なら保存済みの起点" autocomplete="off">
+<label for="rv">まとめて追加（1行に1地点。通過・優先）</label>
+<textarea id="rv" placeholder="地点1&#10;地点2"></textarea>
+<button type="button" onclick="addDraftLines()">まとめて追加</button>
+<h4>このルートの優先道路</h4>
+<label for="rpRoad">道路名</label>
+<input id="rpRoad" placeholder="例：架空通り" autocomplete="off">
+<label for="rpReason">理由（任意）</label>
+<input id="rpReason" placeholder="空欄でも保存できます" autocomplete="off">
+<button type="button" onclick="addDraftPrefer()">優先道路を追加</button>
+<div id="draftPrefers"></div>
+<h4>このルートで避けたい道路</h4>
+<label for="raRoad">道路名</label>
+<input id="raRoad" placeholder="例：〇〇通り" autocomplete="off">
+<label for="raReason">理由</label>
+<input id="raReason" placeholder="例：夕方に混む" autocomplete="off">
+<button type="button" onclick="addDraftAvoid()">回避道路を追加</button>
+<div id="draftAvoids"></div>
+<p class="warn">Googleマップへ渡すのは地点名だけ、先頭3件までです。右折・左折・直進・必須・回避は地図側で強制できません。</p>
+<label for="rh">使う時間帯</label>
+<select id="rh">
+<option>いつでも</option>
+<option>朝</option>
+<option>昼</option>
+<option>夕方</option>
+<option>夜</option>
+</select>
+</details>
+</div>
+<div class="panel">
+<label for="routeSearch">保存したルート</label>
+<input id="routeSearch" placeholder="ルート名・地点・道路" autocomplete="off" oninput="renderRoutes()">
+<div id="routesList"></div>
+</div>
+<div class="panel" id="runEditor">
+<h2>停車後に記録</h2>
+<p id="driveSummary" class="muted">今日の運転でプランを作ると、出発地と目的地を引き継ぎます。</p>
+<label for="driveMinutesActual">実際の走行時間（分）</label>
+<input id="driveMinutesActual" type="number" min="1" max="1440" inputmode="numeric" placeholder="停車後に入力">
+<label for="driveRoadType">走行した道路（比較用）</label>
+<select id="driveRoadType"><option value="">未選択（次回の自動計算に使いません）</option><option value="local">下道</option><option value="express">高速</option></select>
+<label for="driveToll">高速料金（円・任意）</label>
+<input id="driveToll" type="number" min="0" inputmode="numeric" placeholder="わかる場合だけ入力">
+<label for="driveMemo">メモ（任意）</label>
+<input id="driveMemo" placeholder="空欄でも保存できます" autocomplete="off">
+<button type="button" id="driveDetailBtn" onclick="toggleDriveDetail()">出発地・日時・ルートを直す</button>
+<div id="driveDetail" class="hidden">
+<label for="driveOrigin">出発地</label>
+<input id="driveOrigin" autocomplete="off">
+<label for="driveDest">目的地</label>
+<input id="driveDest" autocomplete="off">
+<div class="pair when-narrow">
+<div>
+<label for="driveDate">出発日</label>
+<input id="driveDate" type="date">
+</div>
+<div>
+<label for="driveTime">出発時刻</label>
+<input id="driveTime" type="time">
+</div>
+</div>
+<label for="driveRoute">利用したルート</label>
+<select id="driveRoute"></select>
+</div>
+<button type="button" class="primary" onclick="saveDriveActual()">走行時間を保存</button>
+<p id="driveStatus" class="note hidden"></p>
+<details id="runLogDetail">
+<summary>通った道のメモ（任意）</summary>
+<p id="runRouteName"></p>
+<p id="runInstructed" class="muted"></p>
+<div class="buttons">
+<button type="button" id="runKeep" class="primary" onclick="setRunRating('keep')">このまま</button>
+<button type="button" id="runFix" onclick="setRunRating('fix')">改善したい</button>
+</div>
+<label for="runActual">実際に通った道（指示と違うときだけ）</label>
+<textarea id="runActual" rows="2" placeholder="同じなら空欄"></textarea>
+<label for="runNext">次回の注意</label>
+<textarea id="runNext" rows="2" placeholder="なければ空欄"></textarea>
+<button type="button" class="primary" onclick="saveRunLog()">道のメモを保存</button>
+<p id="runStatus" class="note hidden"></p>
+</details>
+</div>
+<div class="panel">
+<h2>保存した走行時間</h2>
+<div id="driveList"></div>
+</div>
+</section>
+
+<div class="admin-only hidden" id="rulesBox">
+<div class="panel">
+<h3>優先道路・回避・注意</h3>
+<p class="muted">ルートとは別に、方面ごとの運転ルールを残します。ここも記録であり、地図への強制指示にはなりません。</p>
+<div id="rulesList"></div>
+</div>
+<details class="panel" id="ruleEditor">
+<summary>運転ルールを追加</summary>
+<label for="ruleArea">適用方面</label>
+<input id="ruleArea" placeholder="全方面、または方面名" autocomplete="off">
+<label for="rulePoint">道路・交差点</label>
+<input id="rulePoint" autocomplete="off">
+<div class="pair">
+<div>
+<label for="ruleLevel">優先度</label>
+<select id="ruleLevel">
+<option value="must">必ず通る</option>
+<option value="prefer">優先</option>
+<option value="avoid">回避</option>
+<option value="caution">注意</option>
+</select>
+</div>
+<div>
+<label for="ruleTurn">曲がり方</label>
+<select id="ruleTurn">
+<option value="">指定なし</option>
+<option>右折</option>
+<option>左折</option>
+<option>直進</option>
+</select>
+</div>
+</div>
+<label for="ruleTime">時間帯</label>
+<select id="ruleTime">
+<option>いつでも</option>
+<option>朝</option>
+<option>昼</option>
+<option>夕方</option>
+<option>夜</option>
+</select>
+<label for="ruleMemo">理由・注意点</label>
+<textarea id="ruleMemo"></textarea>
+<button type="button" class="primary" onclick="addRule()">ルールを保存</button>
+</details>
+</div>
+
+<section id="data" class="admin-only hidden">
+<div class="panel">
+<h3>非公開施設リストの取り込み</h3>
+<p class="muted">施設だけのJSONを追加します。同じ名前と住所は重複しません。今のルートやルールは残ります。バックアップ一式は下の復元を使ってください。</p>
+<input type="file" id="file" accept=".json,application/json,text/json,text/plain,.txt">
+<button type="button" onclick="importFile('file','places')">施設リストを取り込む</button>
+</div>
+<div class="panel">
+<h3>降車アドバイス（調査メモ）を追加</h3>
+<p class="muted">公開情報から作った調査メモを、施設名と住所が一致する店舗にだけ追加します。未確認の降車場所は推奨しません。既存の運転ルール・ルートは変更しません。</p>
+<input type="file" id="adviceFile" accept=".json,application/json">
+<button type="button" onclick="previewAdviceImport()">照合結果を確認</button>
+<p id="advicePreview" class="muted"></p>
+<div id="adviceActions" class="buttons hidden">
+<button type="button" onclick="applyAdviceImport()">一致した調査メモだけ追加</button>
+<button type="button" class="ghost" onclick="cancelAdviceImport()">キャンセル</button>
+</div>
+</div>
+<div class="panel">
+<h3>運転ノウハウの一括取り込み</h3>
+<p class="muted">方面の優先道路、回避と理由、時間帯の注意、必須地点、右左折、ルートメモをJSONで追加します。確認するまで既存データは変わりません。追加は重複を残し、更新は同じ項目だけ差し替えます。</p>
+<input type="file" id="knowhowFile" accept=".json,application/json,text/json,text/plain,.txt">
+<button type="button" onclick="previewKnowhow('knowhowFile')">内容を確認</button>
+<p id="knowhowPreview" class="muted hidden"></p>
+<div id="knowhowActions" class="buttons hidden">
+<button type="button" onclick="applyKnowhow('add')">追加する</button>
+<button type="button" onclick="applyKnowhow('update')">重複を更新する</button>
+<button type="button" class="ghost" onclick="cancelKnowhow()">キャンセル</button>
+</div>
+</div>
+<div class="panel">
+<h3>バックアップを復元</h3>
+<p class="muted">復元前にファイルを全件検査し、不正・欠損があれば処理しません。現在の保存内容は「復元直前の控え」として端末に保管します。復元前のJSONを別ファイルにも保存してください。</p>
+<input type="file" id="restoreFile" accept=".json,application/json,text/json,text/plain,.txt">
+<button type="button" onclick="importFile('restoreFile','restore')">内容を検査して復元</button>
+<button type="button" id="undoRestoreBtn" onclick="undoLastRestore()" disabled>復元直前のデータに戻す</button>
+<p id="restoreSafetyStatus" class="muted">復元直前の控えはまだありません。</p>
+</div>
+<div class="panel">
+<h3>バックアップを書き出す</h3>
+<button type="button" class="primary" onclick="backup()">JSONファイルを保存</button>
+<button type="button" onclick="copyBackup()">JSONをコピー</button>
+<button type="button" class="ghost" onclick="revealBackup()">内容を表示</button>
+<p id="backupMsg" class="muted">端末にファイルが実際に保存されたかはブラウザ上で検証できません。「ファイル」アプリ等に存在することを確認してください。うまくいかない場合は「JSONをコピー」を使用できます。</p>
+<details id="backupView">
+<summary>書き出したJSON</summary>
+<textarea id="backupText" readonly class="hidden" rows="8" spellcheck="false"></textarea>
+</details>
+</div>
+<details class="panel" id="fieldMeasure">
+<summary>入力欄の高さ診断</summary>
+<p class="muted">ホームの入力欄の表示サイズだけを測ります。入力した文字、施設、住所、ルールは出しません。測定の瞬間だけホームを表示し、すぐ元の画面に戻します。</p>
+<button type="button" onclick="measureHomeFields()">高さを測定</button>
+<button type="button" onclick="copyFieldMeasure()">結果をコピー</button>
+<textarea id="fieldMeasureText" readonly class="hidden" rows="14" spellcheck="false"></textarea>
+</details>
+<div class="panel muted">非公開の会食相手・日程・移動履歴は登録しないでください。Googleマップ起動時には指定した住所・経由地がGoogleへ送信されます。停車や進入は現地規制を優先してください。経由地指定は走行道路の完全固定ではありません。</div>
+</section>
+<nav class="tabbar">
+<button type="button" data-screen="home" class="primary" onclick="tab('home')">今日の運転</button>
+<button type="button" data-screen="routes" onclick="tab('routes')">ルート保存</button>
+</nav>
+
+<script>
+(function () {
+  function showBootError(msg) {
+    var st = document.getElementById('state');
+    if (!st) return;
+    st.textContent = 'エラー：' + msg;
+    st.setAttribute('data-booted', '1');
+  }
+  window.addEventListener('error', function (e) {
+    if (e.target && e.target !== window) return;
+    showBootError((e && e.message) ? e.message : 'スクリプトを実行できません');
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var reason = e && e.reason;
+    showBootError(reason && reason.message ? reason.message : '処理に失敗しました');
+  });
+  window.setTimeout(function () {
+    var st = document.getElementById('state');
+    if (!st) return;
+    var text = st.textContent || '';
+    if (text.indexOf('起動準備中') !== -1 || text.indexOf('読み込み中') !== -1) {
+      showBootError('起動処理が完了しませんでした。ページを再読み込みしてください');
+    }
+  }, 2000);
+})();
+</script>
+<script>
+'use strict';
+// v4 dashboard: all calculations and matching are local; no background GPS or network requests.
+var db = {places: [], routes: [], rules: [], parking: [], origin: '', drives: []};
+var draftPoints = [];
+var draftAvoids = [];
+var draftPrefers = [];
+var draftPlaceId = '';
+var runRouteId = '';
+var runRating = 'keep';
+var editingRouteId = '';
+var editingPlaceId = '';
+var nidSeq = 0;
+var storageLocked = false;
+var pendingKnowhow = null;
+var STORAGE_KEY = 'poli-route-shell44-device-lab-v1'; // 検証専用：本番データと分離
+var RESTORE_UNDO_KEY = STORAGE_KEY + '-before-last-restore';
+var MAP_WAYPOINTS = 3;
+var TRAFFIC_REQUEST_LIMIT = 2;
+var trafficBackend = 'mock';
+var mockTrafficProfile = 'evening';
+var mockTrafficSeq = 0;
+var lastTrafficPlan = null;
+var lastDriveContext = null;
+var driveFormPlaceId = '';
+
+function $(id) { return document.getElementById(id); }
+function v(id) {
+  var el = $(id);
+  return el ? String(el.value || '').trim() : '';
+}
+function asText(value) {
+  if (value == null) return '';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return '';
+}
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c];
+  });
+}
+function nid(prefix) {
+  nidSeq += 1;
+  return prefix + Date.now().toString(36) + '_' + nidSeq;
+}
+function clearNode(el) {
+  if (!el) return;
+  if (typeof el.replaceChildren === 'function') el.replaceChildren();
+  else while (el.firstChild) el.removeChild(el.firstChild);
+}
+function setState(text) {
+  var st = $('state');
+  if (!st) return;
+  var msg = asText(text);
+  var show = msg.indexOf('エラー') === 0 || msg.indexOf('保存できません') !== -1 || msg.indexOf('読めない') !== -1 || msg.indexOf('上書きを止') !== -1 || msg.indexOf('保存制限') !== -1;
+  st.textContent = show ? msg : '';
+  st.classList.toggle('hidden', !show);
+}
+function setStatus(id, ok, text) {
+  var el = $(id);
+  if (!el) return;
+  el.className = 'note ' + (ok ? 'ok' : 'bad');
+  el.textContent = text;
+}
+function safeCall(fn) {
+  try { fn(); }
+  catch (e) { setState('エラー：' + (e && e.message ? e.message : '表示に失敗しました')); }
+}
+function levelLabel(level) {
+  return {must: '必ず通る', prefer: '優先', avoid: '回避', caution: '注意'}[level] || asText(level);
+}
+function modeLabel(mode) {
+  return mode === 'fast' ? '急ぎ' : mode === 'cheap' ? '節約' : '両方';
+}
+function placeAddress(p) {
+  if (!p) return '';
+  return [asText(p.ward), asText(p.address)].filter(Boolean).join(' ');
+}
+function placeLabel(p) {
+  return placeAddress(p) || asText(p && p.name);
+}
+function htmlBtn(act, id, label) {
+  return '<button type="button" data-act="' + esc(act) + '" data-id="' + esc(id) + '">' + esc(label) + '</button>';
+}
+function pad2(n) { return String(n).padStart(2, '0'); }
+function localISODate(date) {
+  var d = date || new Date();
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+}
+function formatDeparture(dt) {
+  return dt.getFullYear() + '/' + pad2(dt.getMonth() + 1) + '/' + pad2(dt.getDate()) + ' ' + pad2(dt.getHours()) + ':' + pad2(dt.getMinutes());
+}
+function parseLocalDateTime(dateStr, timeStr) {
+  var d = String(dateStr || '').trim();
+  var t = String(timeStr || '').trim();
+  var dm = /^(\d{4})-(\d{2})-(\d{2})$/.exec(d);
+  var tm = /^(\d{2}):(\d{2})(?::(\d{2}))?(?:\.\d+)?$/.exec(t);
+  if (!dm || !tm) return null;
+  var year = Number(dm[1]);
+  var month = Number(dm[2]);
+  var day = Number(dm[3]);
+  var hour = Number(tm[1]);
+  var minute = Number(tm[2]);
+  var second = Number(tm[3] || '0');
+  if (month < 1 || month > 12 || day < 1 || day > 31 || hour > 23 || minute > 59 || second > 59) return null;
+  var dt = new Date(year, month - 1, day, hour, minute, second);
+  if (isNaN(dt.getTime())) return null;
+  if (dt.getFullYear() !== year || dt.getMonth() !== month - 1 || dt.getDate() !== day) return null;
+  return dt;
+}
+function foldName(value) {
+  var s = asText(value);
+  try { s = s.normalize('NFKC'); } catch (e) {}
+  s = s.toLowerCase();
+  s = s.replace(/[\s　・･\-‐−ー]/g, '');
+  s = s.replace(/株式会社|有限会社|（株）|\(株\)|㈱/g, '');
+  return s;
+}
+function normalizeAliases(value, official) {
+  var list = [];
+  if (Array.isArray(value)) list = value.map(asText);
+  else if (value) list = String(value).split(/\n|,|、/);
+  var seen = {};
+  var officialKey = foldName(official);
+  return list.map(function (s) { return asText(s).trim(); }).filter(function (s) {
+    var key = foldName(s);
+    if (!key || key === officialKey || seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+function normalizePlace(p) {
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+  var o = Object.assign({}, p);
+  o.id = p.id != null && String(p.id) !== '' ? String(p.id) : nid('p');
+  o.name = asText(p.name);
+  o.address = asText(p.address);
+  o.ward = asText(p.ward);
+  o.memo = asText(p.memo);
+  o.aliases = normalizeAliases(p.aliases, o.name);
+  if (!o.name && !o.address && !o.memo && !o.ward) return null;
+  return o;
+}
+function placeNameKeys(place) {
+  if (!place) return [];
+  return [place.name].concat(Array.isArray(place.aliases) ? place.aliases : []).map(foldName).filter(Boolean);
+}
+function placeById(id) {
+  var key = asText(id);
+  if (!key) return null;
+  return (Array.isArray(db.places) ? db.places : []).find(function (p) { return p && String(p.id) === key; }) || null;
+}
+function routeMatchesPlace(route, place) {
+  if (!route || !place) return false;
+  // Explicit links are authoritative: never attach a route to a different facility by name.
+  if (asText(route.placeId)) return asText(route.placeId) === String(place.id);
+  var to = foldName(route.to);
+  return !!to && placeNameKeys(place).indexOf(to) !== -1;
+}
+function parkingMatchesPlace(row, place) {
+  if (!row || !place) return false;
+  // Name fallback is reserved for legacy records without a facility ID.
+  if (asText(row.placeId)) return asText(row.placeId) === String(place.id);
+  var name = foldName(row.place);
+  return !!name && placeNameKeys(place).indexOf(name) !== -1;
+}
+function routesForPlace(place) {
+  return (Array.isArray(db.routes) ? db.routes : []).filter(function (route) { return routeMatchesPlace(route, place); });
+}
+function parkingRowsForPlace(place) {
+  return parkingArray().filter(function (row) { return parkingMatchesPlace(row, place); });
+}
+function normalizeVia(via) {
+  if (Array.isArray(via)) return via.map(asText).map(function (s) { return s.trim(); }).filter(Boolean);
+  if (via) return String(via).split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+  return [];
+}
+function normalizeTurn(turn) {
+  var t = asText(turn).trim();
+  return t || '通過';
+}
+function normalizePriority(priority) {
+  var p = asText(priority).trim();
+  if (p === 'must' || p === '必須') return 'must';
+  return 'prefer';
+}
+function priorityLabel(priority) {
+  return normalizePriority(priority) === 'must' ? '必須' : '優先';
+}
+function turnText(turn) {
+  var t = asText(turn).trim();
+  if (t === '右折') return '↱ 右折';
+  if (t === '左折') return '↰ 左折';
+  if (t === '直進') return '↑ 直進';
+  if (t === '通過') return '● 通過';
+  return t;
+}
+function priorityChip(priority) {
+  var must = normalizePriority(priority) === 'must';
+  return '<span class="chip ' + (must ? 'must' : 'prefer') + '">' + (must ? '必須' : '優先') + '</span>';
+}
+function levelChip(level) {
+  var cls = level === 'must' ? 'must' : level === 'avoid' ? 'avoid' : level === 'caution' ? 'warnchip' : 'prefer';
+  return '<span class="chip ' + cls + '">' + esc(levelLabel(level)) + '</span>';
+}
+function modeChip(mode) {
+  var label = modeLabel(mode);
+  var cls = mode === 'fast' ? 'fast' : mode === 'cheap' ? 'cheap' : 'prefer';
+  return '<span class="chip ' + cls + '">' + esc(label) + '</span>';
+}
+function normalizePoint(p) {
+  if (typeof p === 'string') {
+    var text = p.trim();
+    if (!text) return null;
+    return {place: text, turn: '通過', priority: 'prefer'};
+  }
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+  var place = asText(p.place || p.name || p.point).trim();
+  if (!place) return null;
+  return {place: place, turn: normalizeTurn(p.turn), priority: normalizePriority(p.priority || p.level)};
+}
+function pointsFromRoute(r) {
+  var fromPoints = [];
+  if (r && Array.isArray(r.points)) fromPoints = r.points.map(normalizePoint).filter(Boolean);
+  if (fromPoints.length) return fromPoints;
+  return normalizeVia(r && r.via).map(function (place) {
+    return {place: place, turn: '通過', priority: 'prefer'};
+  });
+}
+function normalizeAvoid(a) {
+  if (!a || typeof a !== 'object' || Array.isArray(a)) return null;
+  var road = asText(a.road || a.name).trim();
+  var reason = asText(a.reason || a.memo).trim();
+  if (!road && !reason) return null;
+  return {road: road, reason: reason};
+}
+function normalizeLog(log) {
+  if (!log || typeof log !== 'object' || Array.isArray(log)) return null;
+  var rating = log.rating === 'fix' ? 'fix' : 'keep';
+  var actual = asText(log.actual).trim();
+  var next = asText(log.next).trim();
+  var instructed = asText(log.instructed).trim();
+  if (!actual && !next && !instructed && !log.at && !log.rating) return null;
+  return {
+    id: log.id != null && String(log.id) !== '' ? String(log.id) : nid('log'),
+    at: asText(log.at),
+    rating: rating,
+    actual: actual,
+    next: next,
+    instructed: instructed
+  };
+}
+function normalizeRoute(r) {
+  if (!r || typeof r !== 'object' || Array.isArray(r)) return null;
+  var o = Object.assign({}, r);
+  o.id = r.id != null && String(r.id) !== '' ? String(r.id) : nid('r');
+  o.name = asText(r.name);
+  o.from = asText(r.from);
+  o.to = asText(r.to);
+  o.time = asText(r.time);
+  o.memo = asText(r.memo);
+  o.placeId = asText(r.placeId);
+  o.points = pointsFromRoute(r);
+  o.avoids = Array.isArray(r.avoids) ? r.avoids.map(normalizeAvoid).filter(Boolean) : [];
+  o.prefers = Array.isArray(r.prefers) ? r.prefers.map(normalizeAvoid).filter(Boolean) : [];
+  o.logs = Array.isArray(r.logs) ? r.logs.map(normalizeLog).filter(Boolean) : [];
+  o.via = o.points.map(function (p) { return p.place; });
+  if (!o.name && !o.from && !o.to && !o.points.length) return null;
+  return o;
+}
+function normalizeRule(r) {
+  if (!r || typeof r !== 'object' || Array.isArray(r)) return null;
+  var o = Object.assign({}, r);
+  o.id = r.id != null && String(r.id) !== '' ? String(r.id) : nid('rule');
+  o.area = asText(r.area);
+  o.point = asText(r.point);
+  o.level = asText(r.level);
+  o.turn = asText(r.turn);
+  o.time = asText(r.time);
+  o.memo = asText(r.memo);
+  if (!o.point && !o.memo && !o.area) return null;
+  return o;
+}
+function normalizeParking(p) {
+  if (!p || typeof p !== 'object' || Array.isArray(p)) return null;
+  var o = Object.assign({}, p);
+  o.id = p.id != null && String(p.id) !== '' ? String(p.id) : nid('pk');
+  o.place = asText(p.place);
+  o.address = asText(p.address);
+  o.dropoff = asText(p.dropoff);
+  o.walkMinutes = p.walkMinutes === '' || p.walkMinutes == null ? '' : asText(p.walkMinutes);
+  o.crossing = ['yes','no'].indexOf(p.crossing) >= 0 ? p.crossing : 'unknown';
+  o.approach = asText(p.approach);
+  o.status = asText(p.status);
+  o.name = asText(p.name);
+  o.location = asText(p.location);
+  o.mode = asText(p.mode);
+  o.price = p.price == null ? '' : asText(p.price);
+  o.duration = p.duration == null ? '' : asText(p.duration);
+  o.checked = asText(p.checked);
+  o.memo = asText(p.memo);
+  o.placeId = asText(p.placeId);
+  if (!o.place && !o.name && !o.dropoff && !o.location) return null;
+  return o;
+}
+function screenName(t) {
+  if (t === 'routes') return 'routes';
+  if (t === 'places' || t === 'parking' || t === 'data' || t === 'rules' || t === 'admin') return 'admin';
+  return 'home';
+}
+function tab(t) {
+  var name = screenName(t);
+  var home = $('home');
+  var routes = $('routes');
+  if (home) home.classList.toggle('hidden', name !== 'home');
+  if (routes) routes.classList.toggle('hidden', name !== 'routes');
+  var adminNodes = document.querySelectorAll('.admin-only');
+  for (var i = 0; i < adminNodes.length; i++) {
+    adminNodes[i].classList.toggle('hidden', name !== 'admin');
+  }
+  var buttons = document.querySelectorAll('.tabbar button');
+  for (var j = 0; j < buttons.length; j++) {
+    buttons[j].classList.toggle('primary', buttons[j].getAttribute('data-screen') === name);
+  }
+  var settings = $('settingsBtn');
+  if (settings) settings.classList.toggle('primary', name === 'admin');
+  if (t === 'parking') {
+    var park = $('parkEditor');
+    if (park) park.open = true;
+  }
+  if (t === 'rules') {
+    var ruleBox = $('ruleEditor');
+    if (ruleBox) ruleBox.open = true;
+  }
+  if (name === 'routes') safeCall(renderDrives);
+  if (name === 'home' && v('todayDest') && v('todayDate') && v('todayTime')) safeCall(function () { buildToday({quiet: true}); });
+  try { window.scrollTo(0, 0); } catch (e) {}
+}
+function persist(force) {
+  // 破損データの状態では force を指定されても上書きを許可しない。
+  // 正しいバックアップでの回復は atomicReplaceRestore のみ使用する。
+  if (storageLocked) {
+    setState('保存データを読めないため、上書きを止めています');
+    alert('以前の保存データを読めないため、上書きを止めています。バックアップの復元を使ってください');
+    return false;
+  }
+  var previous = null;
+  var writing = false;
+  try {
+    previous = localStorage.getItem(STORAGE_KEY);
+    var serialized = JSON.stringify(db);
+    writing = true;
+    localStorage.setItem(STORAGE_KEY, serialized);
+    if (localStorage.getItem(STORAGE_KEY) !== serialized) throw new Error('保存後の読み取りが一致しません');
+    setState('準備OK・端末内保存');
+    safeCall(renderDataCounts);
+    safeCall(checkStorageContext);
+    return true;
+  } catch (e) {
+    // 一部のストレージ障害を想定し、既存値を戻して読返す。
+    if (writing) {
+      try {
+        if (previous === null) localStorage.removeItem(STORAGE_KEY);
+        else localStorage.setItem(STORAGE_KEY, previous);
+        if (localStorage.getItem(STORAGE_KEY) !== previous) throw new Error('元の状態を確認できません');
+      } catch (rollbackError) {
+        storageLocked = true;
+        setState('保存に失敗・元データの復旧未確認');
+        alert('保存に失敗。元データを確認できないため、追加保存を停止しました。バックアップを確認してください');
+        return false;
+      }
+    }
+    setState('保存できません');
+    alert('保存に失敗しました。端末の空き容量・Safariの利用環境を確認してください');
+    return false;
+  }
+}
+function checkStorageContext() {
+  var target = $('storageContext');
+  if (!target) return;
+  var mode = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true ? 'ホーム画面アプリ' : 'ブラウザ';
+  var state = '保存データなし';
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.places) && Array.isArray(parsed.routes)) {
+        state = '保存済み：施設' + parsed.places.length + '件・ルート' + parsed.routes.length + '件・ルール' + (Array.isArray(parsed.rules) ? parsed.rules.length : 0) + '件・走行' + (Array.isArray(parsed.drives) ? parsed.drives.length : 0) + '件';
+      } else state = '保存データの形式を確認してください';
+    }
+  } catch (e) { state = '保存データを読み取れません'; }
+  target.textContent = '表示環境：' + mode + ' / 保存キー：' + STORAGE_KEY + ' / ' + state;
+  refreshUndoRestoreState();
+}
+function withSavedChange(mutate) {
+  var snapshot;
+  try { snapshot = JSON.parse(JSON.stringify(db)); }
+  catch (e) {
+    setState('エラー：保存前の控えを作れません');
+    return false;
+  }
+  try { mutate(); }
+  catch (e) {
+    db = snapshot;
+    refreshAllViews();
+    setState('エラー：' + (e && e.message ? e.message : '保存できません'));
+    return false;
+  }
+  if (persist()) return true;
+  db = snapshot;
+  refreshAllViews();
+  return false;
+}
+function openUrl(url) {
+  if (!url) return;
+  var win = null;
+  try { win = window.open(url, '_blank'); } catch (e) { win = null; }
+  if (win) {
+    try { win.opener = null; } catch (e2) {}
+    return;
+  }
+  var a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  document.body.appendChild(a);
+  a.click();
+  if (a.parentNode) a.parentNode.removeChild(a);
+}
+function maps(to, from, via) {
+  if (!to) return alert('目的地を入力してください');
+  try {
+    var url = new URL('https://www.google.com/maps/dir/');
+    url.searchParams.set('api', '1');
+    url.searchParams.set('travelmode', 'driving');
+    url.searchParams.set('destination', to);
+    if (from) url.searchParams.set('origin', from);
+    var points = (via || []).map(function (x) { return String(x).trim(); }).filter(Boolean).slice(0, MAP_WAYPOINTS);
+    if (points.length) url.searchParams.set('waypoints', points.join('|'));
+    openUrl(url.toString());
+  } catch (e) {
+    alert('地図を開けません：' + (e && e.message ? e.message : '不明'));
+  }
+}
+function render() {
+  var listEl = $('list');
+  var countEl = $('count');
+  if (!listEl || !countEl) return;
+  var q = foldName(v('search'));
+  var places = Array.isArray(db.places) ? db.places : [];
+  var list = places.filter(function (p) {
+    if (!p) return false;
+    if (!q) return true;
+    return placeNameKeys(p).concat([foldName(p.address), foldName(p.ward), foldName(p.memo)]).some(function (s) {
+      return s.indexOf(q) !== -1;
+    });
+  });
+  countEl.textContent = places.length + '件登録 / ' + list.length + '件一致';
+  listEl.innerHTML = list.slice(0, 40).map(function (p) {
+    var where = [p.ward, p.address].filter(Boolean).join(' ');
+    var linked = parkingRowsForPlace(p);
+    var routeCount = routesForPlace(p).length;
+    var aliasLine = Array.isArray(p.aliases) && p.aliases.length ? '<p class="muted">別表記：' + esc(p.aliases.join('、')) + '</p>' : '';
+    var parkLine = linked.length ? linked.slice(0, 2).map(function (row) {
+      return modeChip(row.mode) + esc(row.name || row.dropoff || '記録');
+    }).join(' ') : '<span class="muted">乗降・駐車：未登録</span>';
+    return '<div class="item"><b>' + esc(p.name) + '</b><p class="muted">' + esc(where || '住所：未登録') + '</p>' +
+      (p.memo ? '<p class="muted clamp">' + esc(p.memo) + '</p>' : '') +
+      aliasLine +
+      '<p class="muted">ルート ' + routeCount + '件</p><p class="muted">' + parkLine + '</p><div class="buttons">' +
+      htmlBtn('place-edit', p.id, '編集') +
+      htmlBtn('place-del', p.id, '削除') +
+      htmlBtn('place-park', p.id, '乗降・駐車') +
+      htmlBtn('place-route', p.id, 'ルート') +
+      htmlBtn('place-nav', p.id, '地図') +
+      '</div></div>';
+  }).join('') || '<p class="muted">該当なし</p>';
+}
+function setPlaceSaveLabel() {
+  var b = $('placeSave');
+  if (b) b.textContent = editingPlaceId ? '施設を更新' : '施設を保存';
+}
+function clearPlaceForm() {
+  editingPlaceId = '';
+  ['pn', 'pa', 'pw', 'pm', 'paAlias'].forEach(function (x) { if ($(x)) $(x).value = ''; });
+  setPlaceSaveLabel();
+}
+function sameFacility(a, b) {
+  if (!a || !b) return false;
+  if (String(a.id || '') && String(a.id) === String(b.id || '')) return false;
+  var names = placeNameKeys(a);
+  var other = placeNameKeys(b);
+  var shared = names.some(function (n) { return other.indexOf(n) !== -1; });
+  if (!shared) return false;
+  var aa = foldName(a.address);
+  var bb = foldName(b.address);
+  if (!aa || !bb) return true;
+  return aa === bb;
+}
+function addPlace() {
+  if (!v('pn')) return alert('施設名を入力');
+  var draft = {
+    id: editingPlaceId || '',
+    name: v('pn'),
+    address: v('pa'),
+    ward: v('pw'),
+    memo: v('pm'),
+    aliases: normalizeAliases(v('paAlias'), v('pn'))
+  };
+  var dup = (Array.isArray(db.places) ? db.places : []).find(function (item) { return sameFacility(item, draft); });
+  if (dup && !editingPlaceId) {
+    if (!confirm('「' + (dup.name || '既存の施設') + '」と同じ施設です。新しくは追加せず、その施設を編集しますか？')) return;
+    editPlace(dup.id);
+    return;
+  }
+  if (dup && editingPlaceId) return alert('「' + (dup.name || '別の施設') + '」と重複します。呼び方を変えるか、そちらの施設を編集してください');
+  var updated = false;
+  if (editingPlaceId) {
+    var current = db.places.find(function (item) { return item && String(item.id) === String(editingPlaceId); });
+    if (current) {
+      var oldName = current.name;
+      var links = {
+        routes: (Array.isArray(db.routes) ? db.routes : []).filter(function (route) {
+          return asText(route.placeId) === String(current.id) || (!asText(route.placeId) && foldName(route.to) === foldName(oldName));
+        }),
+        parks: parkingArray().filter(function (row) {
+          return asText(row.placeId) === String(current.id) || (!asText(row.placeId) && foldName(row.place) === foldName(oldName));
+        }),
+        drives: (Array.isArray(db.drives) ? db.drives : []).filter(function (row) {
+          return asText(row.placeId) === String(current.id) || (!asText(row.placeId) && foldName(row.destination) === foldName(oldName));
+        })
+      };
+      var nameChanged = foldName(oldName) !== foldName(draft.name);
+      var needsStamp = links.routes.some(function (route) { return !asText(route.placeId); }) || links.parks.some(function (row) { return !asText(row.placeId); }) || links.drives.some(function (row) { return !asText(row.placeId); });
+      if ((nameChanged || needsStamp) && (links.routes.length || links.parks.length || links.drives.length)) {
+        var msg = nameChanged
+          ? '施設名を変えます。ルート' + links.routes.length + '件・乗降' + links.parks.length + '件・走行実績' + links.drives.length + '件は同じIDのまま表示名を合わせます。通過地点や運転ルールは変えません。保存しますか？'
+          : '名前が一致するルート' + links.routes.length + '件・乗降' + links.parks.length + '件・走行実績' + links.drives.length + '件に施設IDを紐づけます。中身は変えません。保存しますか？';
+        if (!confirm(msg)) return;
+      }
+      updated = true;
+    }
+  }
+  var created = updated ? null : {id: nid('p'), name: draft.name, address: draft.address, ward: draft.ward, memo: draft.memo, aliases: draft.aliases};
+  if (!withSavedChange(function () {
+    if (!updated || !current) {
+      db.places.unshift(created);
+      return;
+    }
+    current.name = draft.name;
+    current.address = draft.address;
+    current.ward = draft.ward;
+    current.memo = draft.memo;
+    current.aliases = draft.aliases;
+    links.routes.forEach(function (route) {
+      route.placeId = String(current.id);
+      if (nameChanged && foldName(route.to) === foldName(oldName)) route.to = current.name;
+    });
+    links.parks.forEach(function (row) {
+      row.placeId = String(current.id);
+      if (nameChanged && foldName(row.place) === foldName(oldName)) row.place = current.name;
+    });
+    links.drives.forEach(function (row) {
+      row.placeId = String(current.id);
+      if (nameChanged && foldName(row.destination) === foldName(oldName)) row.destination = current.name;
+      if (draft.ward) row.ward = draft.ward;
+    });
+  })) return;
+  clearPlaceForm();
+  render();
+  renderRoutes();
+  renderParking();
+  refreshTodayPlaces();
+}
+function navPlace(id) {
+  var p = db.places.find(function (item) { return item && String(item.id) === String(id); });
+  if (p) maps(placeLabel(p) || p.name);
+}
+function makeRoute(id) {
+  var p = db.places.find(function (item) { return item && String(item.id) === String(id); });
+  if (!p) return;
+  clearRouteForm();
+  draftPlaceId = String(p.id);
+  tab('routes');
+  var count = routesForPlace(p).length;
+  if ($('rt')) $('rt').value = p.name;
+  if ($('rn')) $('rn').value = p.name + 'へのルート' + (count ? String(count + 1) : '');
+  var detail = $('routeDetail');
+  if (detail) detail.open = false;
+  if ($('rf') && !$('rf').value) $('rf').value = db.origin || v('todayOrigin');
+}
+function editPlace(id) {
+  var p = db.places.find(function (item) { return item && String(item.id) === String(id); });
+  if (!p) return;
+  editingPlaceId = String(p.id);
+  if ($('pn')) $('pn').value = p.name || '';
+  if ($('pa')) $('pa').value = p.address || '';
+  if ($('pw')) $('pw').value = p.ward || '';
+  if ($('paAlias')) $('paAlias').value = Array.isArray(p.aliases) ? p.aliases.join('\n') : '';
+  if ($('pm')) $('pm').value = p.memo || '';
+  setPlaceSaveLabel();
+  var form = $('placeEditor');
+  if (form) form.open = true;
+  tab('places');
+  if (form && form.scrollIntoView) {
+    try { form.scrollIntoView({block: 'start'}); } catch (e) { form.scrollIntoView(); }
+  }
+}
+function deletePlace(id) {
+  var p = db.places.find(function (item) { return item && String(item.id) === String(id); });
+  if (!p) return;
+  if (!confirm('「' + (p.name || 'この施設') + '」を削除しますか？ルートと乗降の記録は残ります。')) return;
+  if (!withSavedChange(function () {
+    db.places = db.places.filter(function (item) { return item && String(item.id) !== String(id); });
+  })) return;
+  if (String(editingPlaceId) === String(id)) clearPlaceForm();
+  render();
+  refreshTodayPlaces();
+}
+function parkingForPlace(id) {
+  var p = db.places.find(function (item) { return item && String(item.id) === String(id); });
+  if (!p) return;
+  if ($('parkPlace')) $('parkPlace').value = p.name;
+  if ($('parkAddress')) $('parkAddress').value = placeAddress(p);
+  var form = $('parkEditor');
+  if (form) form.open = true;
+  tab('parking');
+  renderParking();
+  if (form && form.scrollIntoView) {
+    try { form.scrollIntoView({block: 'start'}); } catch (e) { form.scrollIntoView(); }
+  }
+}
+function setRouteSaveLabel() {
+  var b = $('routeSave');
+  if (b) b.textContent = editingRouteId ? 'ルートを更新' : 'ルートを保存';
+}
+function renderDraftPoints() {
+  var box = $('draftPoints');
+  if (!box) return;
+  if (!draftPoints.length) {
+    box.innerHTML = '<p class="muted">通過地点はまだありません。上から順に追加してください。</p>';
+    return;
+  }
+  box.innerHTML = draftPoints.map(function (p, i) {
+    return '<div class="item">' + priorityChip(p.priority) + '<b>' + (i + 1) + '. ' + esc(p.place) + '</b><p class="muted">' + esc(turnText(p.turn)) + '</p><div class="buttons">' +
+      htmlBtn('point-up', i, '上へ') +
+      htmlBtn('point-down', i, '下へ') +
+      htmlBtn('point-del', i, '削除') +
+      '</div></div>';
+  }).join('');
+}
+function renderDraftPrefers() {
+  var box = $('draftPrefers');
+  if (!box) return;
+  if (!draftPrefers.length) {
+    box.innerHTML = '<p class="muted">優先道路はまだありません。</p>';
+    return;
+  }
+  box.innerHTML = draftPrefers.map(function (a, i) {
+    return '<div class="item"><b>' + esc(a.road) + '</b><p class="muted">' + esc(a.reason || '理由：未登録') + '</p><div class="buttons">' +
+      htmlBtn('prefer-del', i, '削除') +
+      '</div></div>';
+  }).join('');
+}
+function renderDraftAvoids() {
+  var box = $('draftAvoids');
+  if (!box) return;
+  if (!draftAvoids.length) {
+    box.innerHTML = '<p class="muted">避けたい道路はまだありません。</p>';
+    return;
+  }
+  box.innerHTML = draftAvoids.map(function (a, i) {
+    return '<div class="item"><b>' + esc(a.road) + '</b><p class="muted">' + esc(a.reason) + '</p><div class="buttons">' +
+      htmlBtn('avoid-del', i, '削除') +
+      '</div></div>';
+  }).join('');
+}
+function addDraftPoint() {
+  var place = v('rp');
+  if (!place) return alert('地点名を入力');
+  draftPoints.push({place: place, turn: normalizeTurn(v('rpTurn')), priority: normalizePriority(v('rpPriority'))});
+  if ($('rp')) $('rp').value = '';
+  renderDraftPoints();
+}
+function addDraftLines() {
+  var lines = v('rv').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+  if (!lines.length) return alert('地点を1行ずつ入力');
+  lines.forEach(function (place) {
+    draftPoints.push({place: place, turn: '通過', priority: 'prefer'});
+  });
+  if ($('rv')) $('rv').value = '';
+  renderDraftPoints();
+}
+function absorbDraftLines() {
+  var lines = v('rv').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+  lines.forEach(function (place) {
+    draftPoints.push({place: place, turn: '通過', priority: 'prefer'});
+  });
+  if ($('rv')) $('rv').value = '';
+}
+function addDraftPrefer() {
+  var road = v('rpRoad');
+  if (!road) return alert('優先する道路名を入力');
+  draftPrefers.push({road: road, reason: v('rpReason')});
+  if ($('rpRoad')) $('rpRoad').value = '';
+  if ($('rpReason')) $('rpReason').value = '';
+  renderDraftPrefers();
+}
+function addDraftAvoid() {
+  var road = v('raRoad');
+  var reason = v('raReason');
+  if (!road || !reason) return alert('避けたい道路と理由を入力');
+  draftAvoids.push({road: road, reason: reason});
+  if ($('raRoad')) $('raRoad').value = '';
+  if ($('raReason')) $('raReason').value = '';
+  renderDraftAvoids();
+}
+function moveDraftPoint(index, dir) {
+  var i = Number(index);
+  var j = i + dir;
+  if (!isFinite(i) || j < 0 || j >= draftPoints.length) return;
+  var tmp = draftPoints[i];
+  draftPoints[i] = draftPoints[j];
+  draftPoints[j] = tmp;
+  renderDraftPoints();
+}
+function removeDraftPoint(index) {
+  var i = Number(index);
+  if (!isFinite(i) || i < 0 || i >= draftPoints.length) return;
+  draftPoints.splice(i, 1);
+  renderDraftPoints();
+}
+function removeDraftAvoid(index) {
+  var i = Number(index);
+  if (!isFinite(i) || i < 0 || i >= draftAvoids.length) return;
+  draftAvoids.splice(i, 1);
+  renderDraftAvoids();
+}
+function removeDraftPrefer(index) {
+  var i = Number(index);
+  if (!isFinite(i) || i < 0 || i >= draftPrefers.length) return;
+  draftPrefers.splice(i, 1);
+  renderDraftPrefers();
+}
+function clearRouteForm() {
+  editingRouteId = '';
+  draftPlaceId = '';
+  draftPoints = [];
+  draftAvoids = [];
+  draftPrefers = [];
+  ['rn', 'rf', 'rt', 'rv', 'rm', 'rp', 'raRoad', 'raReason', 'rpRoad', 'rpReason'].forEach(function (x) { if ($(x)) $(x).value = ''; });
+  if ($('rpTurn')) $('rpTurn').value = '直進';
+  if ($('rpPriority')) $('rpPriority').value = 'prefer';
+  if ($('rh')) $('rh').value = 'いつでも';
+  setRouteSaveLabel();
+  renderDraftPoints();
+  renderDraftAvoids();
+  renderDraftPrefers();
+}
+function routeDetailHtml(r) {
+  var pts = pointsFromRoute(r);
+  var lines = pts.map(function (p, i) {
+    return priorityChip(p.priority) + esc((i + 1) + '. ' + p.place + '　' + turnText(p.turn));
+  }).join('<br>');
+  var avoids = (Array.isArray(r.avoids) ? r.avoids : []).map(function (a) {
+    return esc(a.road + (a.reason ? '（' + a.reason + '）' : ''));
+  }).join('<br>');
+  var prefers = (Array.isArray(r.prefers) ? r.prefers : []).map(function (a) {
+    return esc(a.road + (a.reason ? '（' + a.reason + '）' : ''));
+  }).join('<br>');
+  var logs = Array.isArray(r.logs) ? r.logs : [];
+  var last = logs.length ? logs[logs.length - 1] : null;
+  var limit = '<br>Googleマップへ渡るのは地点名だけ、先頭' + MAP_WAYPOINTS + '件です。右折・左折・必須・優先・回避は強制できません。';
+  return esc(r.from) + ' → ' + esc(r.to) + ' / ' + esc(r.time) +
+    '<br>通過順：' + (lines || '指定なし') +
+    (prefers ? '<br>優先道路：<br>' + prefers : '') +
+    (avoids ? '<br>避けたい道路：<br>' + avoids : '') +
+    (r.memo ? '<br>' + esc(r.memo) : '') +
+    (last ? '<br>前回の実走：' + esc(last.actual || (last.rating === 'keep' ? '指示どおり' : '未登録')) + (last.next ? ' / 次回：' + esc(last.next) : '') : '') +
+    limit;
+}
+function addRoute() {
+  // A pending point is included in the same save operation. Users no longer
+  // have to press the separate add-point button for the final point.
+  if (!v('rt')) return setStatus('routeStatus', false, '目的地を入力してください');
+  if (!v('rn')) {
+    var same = (Array.isArray(db.routes) ? db.routes : []).filter(function (item) {
+      return item && foldName(item.to) === foldName(v('rt')) && String(item.id) !== String(editingRouteId || '');
+    }).length;
+    if ($('rn')) $('rn').value = v('rt') + 'へのルート' + (same ? String(same + 1) : '');
+  }
+  if (!v('rf')) {
+    var savedOrigin = db.origin || v('todayOrigin');
+    if ($('rf')) $('rf').value = savedOrigin;
+  }
+  if (!v('rf')) {
+    var detail = $('routeDetail');
+    if (detail) detail.open = true;
+    var from = $('rf');
+    if (from && from.focus) {
+      try { from.focus(); } catch (e) {}
+    }
+    return setStatus('routeStatus', false, '出発地を入力してください');
+  }
+  // Collect pending inputs without mutating the draft until persistence succeeds.
+  var pendingPoint = v('rp').trim();
+  var pendingLines = v('rv').split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+  var points = draftPoints.concat(pendingPoint ? [{place: pendingPoint, turn: normalizeTurn(v('rpTurn')), priority: normalizePriority(v('rpPriority'))}] : [], pendingLines.map(function (name) { return {place: name, turn: '通過', priority: 'prefer'}; })).map(normalizePoint).filter(Boolean);
+  var avoids = draftAvoids.map(normalizeAvoid).filter(Boolean);
+  var prefers = draftPrefers.map(normalizeAvoid).filter(Boolean);
+  var existing = null;
+  if (editingRouteId) {
+    existing = (Array.isArray(db.routes) ? db.routes : []).find(function (item) { return item && String(item.id) === String(editingRouteId); }) || null;
+  }
+  var typedPlace = findPlaceExact(v('rt'));
+  var route = {
+    id: editingRouteId || nid('r'),
+    name: v('rn'),
+    from: v('rf'),
+    to: v('rt'),
+    time: v('rh'),
+    memo: v('rm'),
+    placeId: typedPlace ? String(typedPlace.id) : (draftPlaceId || (existing ? asText(existing.placeId) : '')),
+    points: points,
+    avoids: avoids,
+    prefers: prefers,
+    logs: existing && Array.isArray(existing.logs) ? existing.logs : [],
+    via: points.map(function (p) { return p.place; })
+  };
+  var wasEdit = !!editingRouteId;
+  if (!withSavedChange(function () {
+    if (wasEdit) {
+      var idx = -1;
+      for (var i = 0; i < db.routes.length; i++) {
+        if (db.routes[i] && String(db.routes[i].id) === String(editingRouteId)) idx = i;
+      }
+      if (idx >= 0) db.routes[idx] = route;
+      else db.routes.unshift(route);
+    } else db.routes.unshift(route);
+  })) return setStatus('routeStatus', false, '保存できませんでした');
+  // Verify the saved route by its ID against persistent storage, not only db.
+  var verified = false;
+  var savedCount = 0;
+  try {
+    var stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+    savedCount = stored && Array.isArray(stored.routes) ? stored.routes.length : 0;
+    verified = !!(stored && Array.isArray(stored.routes) && stored.routes.some(function (item) {
+      return item && String(item.id) === String(route.id) && item.to === route.to && item.from === route.from;
+    }));
+  } catch (e) { verified = false; }
+  if (!verified) {
+    // Do not show a misleading success message; leave the editor open for recovery.
+    setStatus('routeStatus', false, '保存の再確認に失敗しました。入力はそのままです。バックアップを確認してください。');
+    return;
+  }
+  clearRouteForm();
+  if ($('routeSearch')) $('routeSearch').value = '';
+  renderRoutes();
+  checkStorageContext();
+  var displayMode = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true ? 'ホーム画面アプリ' : 'Safariなどのブラウザ';
+  setStatus('routeStatus', true, (wasEdit ? 'ルートを更新しました' : 'ルートを保存しました') + '。保存済みルート' + savedCount + '件（' + displayMode + '）。下の一覧に表示しています。');
+}
+function renderRoutes() {
+  var box = $('routesList');
+  if (!box) return;
+  var q = v('routeSearch').toLowerCase();
+  var routes = (Array.isArray(db.routes) ? db.routes : []).filter(function (r) {
+    if (!q || !r) return !!r;
+    var pts = pointsFromRoute(r).map(function (p) { return p.place; }).join(' ');
+    var avoids = (Array.isArray(r.avoids) ? r.avoids : []).map(function (a) { return asText(a.road) + asText(a.reason); }).join(' ');
+    return [r.name, r.from, r.to, r.memo, pts, avoids].join(' ').toLowerCase().indexOf(q) !== -1;
+  });
+  box.innerHTML = routes.map(function (r) {
+    var pts = pointsFromRoute(r).slice(0, 4).map(function (p) {
+      return p.place + ' ' + (asText(p.turn).trim() || '通過') + (p.priority === 'must' ? '・必ず通る' : '');
+    }).join(' → ');
+    var logs = Array.isArray(r.logs) ? r.logs : [];
+    var last = logs.length ? logs[logs.length - 1] : null;
+    var note = (last && asText(last.next).trim()) || asText(r.memo).trim();
+    return '<div class="item"><b>' + esc(r.name || r.to || '名称未登録') + '</b><p class="muted">' +
+      esc(r.to || '目的地：未登録') + (pts ? '<br>' + esc(pts) : '<br>通過地点：未登録') +
+      (note ? '<br>次回の注意：' + esc(note) : '') +
+      '</p><div class="buttons">' +
+      htmlBtn('route-edit', r.id, '編集') +
+      htmlBtn('route-run', r.id, '停車後に記録') +
+      htmlBtn('route-nav', r.id, '地図') +
+      htmlBtn('route-del', r.id, '削除') +
+      '</div></div>';
+  }).join('') || '<p class="muted">ルートはまだありません。</p>';
+}
+function navRoute(id) {
+  var r = db.routes.find(function (item) { return item && String(item.id) === String(id); });
+  if (!r) return;
+  var via = pointsFromRoute(r).map(function (p) { return p.place; });
+  if (via.length > MAP_WAYPOINTS) alert('経由地は先頭' + MAP_WAYPOINTS + '件のみGoogleマップに渡します。右左折や必須道路は地図側では強制されません。');
+  var place = placeById(r.placeId) || findPlaceExact(r.to);
+  maps(place ? (placeLabel(place) || place.name) : r.to, r.from, via);
+}
+function editRoute(id) {
+  var r = db.routes.find(function (item) { return item && String(item.id) === String(id); });
+  if (!r) return;
+  editingRouteId = String(r.id);
+  if ($('rn')) $('rn').value = r.name || '';
+  if ($('rf')) $('rf').value = r.from || '';
+  if ($('rt')) $('rt').value = r.to || '';
+  if ($('rh')) $('rh').value = r.time || 'いつでも';
+  if ($('rm')) $('rm').value = r.memo || '';
+  if ($('rv')) $('rv').value = '';
+  if ($('rp')) $('rp').value = '';
+  draftPlaceId = asText(r.placeId);
+  draftPoints = pointsFromRoute(r).map(function (p) { return {place: p.place, turn: p.turn, priority: p.priority}; });
+  draftAvoids = (Array.isArray(r.avoids) ? r.avoids : []).map(function (a) { return {road: a.road, reason: a.reason}; });
+  draftPrefers = (Array.isArray(r.prefers) ? r.prefers : []).map(function (a) { return {road: a.road, reason: a.reason}; });
+  renderDraftPoints();
+  renderDraftAvoids();
+  renderDraftPrefers();
+  setRouteSaveLabel();
+  var detail = $('routeDetail');
+  if (detail) detail.open = true;
+  tab('routes');
+  var form = $('routeEditor');
+  if (form && form.scrollIntoView) {
+    try { form.scrollIntoView({behavior: 'smooth', block: 'start'}); } catch (e) { form.scrollIntoView(); }
+  }
+}
+function delRoute(id) {
+  if (!confirm('このルートを削除しますか？')) return;
+  if (!withSavedChange(function () {
+    db.routes = db.routes.filter(function (x) { return x && String(x.id) !== String(id); });
+  })) return;
+  renderRoutes();
+  replanAfterRecordChange('ルートを削除しました。計画を再確認してください。');
+}
+function instructedText(route) {
+  var pts = pointsFromRoute(route);
+  if (!pts.length) return '指示された道：未登録';
+  return '指示された道：' + pts.map(function (p, i) {
+    return (i + 1) + '. ' + p.place + ' ' + (asText(p.turn).trim() || '通過');
+  }).join(' / ');
+}
+function setRunRating(rating) {
+  runRating = rating === 'fix' ? 'fix' : 'keep';
+  var keep = $('runKeep');
+  var fix = $('runFix');
+  if (keep) keep.classList.toggle('primary', runRating === 'keep');
+  if (fix) fix.classList.toggle('primary', runRating === 'fix');
+}
+function openRunLog(id) {
+  var route = (Array.isArray(db.routes) ? db.routes : []).find(function (item) { return item && String(item.id) === String(id); });
+  if (!route) return alert('ルートが見つかりません');
+  runRouteId = String(route.id);
+  setRunRating('keep');
+  if ($('runActual')) $('runActual').value = '';
+  if ($('runNext')) $('runNext').value = '';
+  if ($('runRouteName')) $('runRouteName').textContent = route.name || '名称未登録';
+  if ($('runInstructed')) $('runInstructed').textContent = instructedText(route);
+  fillDriveForm(route.id);
+  tab('routes');
+  revealDriveMinutes();
+}
+function saveRunLog() {
+  var route = (Array.isArray(db.routes) ? db.routes : []).find(function (item) { return item && String(item.id) === String(runRouteId); });
+  if (!route) return setStatus('runStatus', false, '先にルートを選んでください');
+  var entry = {
+    id: nid('log'),
+    at: localISODate(new Date()),
+    rating: runRating === 'fix' ? 'fix' : 'keep',
+    actual: v('runActual'),
+    next: v('runNext'),
+    instructed: instructedText(route).replace(/^指示された道：/, '')
+  };
+  if (!withSavedChange(function () {
+    if (!Array.isArray(route.logs)) route.logs = [];
+    route.logs.push(entry);
+  })) return setStatus('runStatus', false, '保存できませんでした');
+  if ($('runActual')) $('runActual').value = '';
+  if ($('runNext')) $('runNext').value = '';
+  renderRoutes();
+  setStatus('runStatus', true, '道のメモを保存しました');
+}
+// Shell-40: 復元は「全件事前検証→直前データ退避→1回で書込→読返し確認」。
+// 失敗しても現在の本番データを壊さない。バックアップの旧形式（optional fields 無し）は受け入れる。
+function prepareStrictRestore(o) {
+  if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('バックアップのルート形式が不正です');
+  if (!Array.isArray(o.places) || !Array.isArray(o.routes)) throw new Error('施設・ルート配列がありません');
+  var optional = ['rules', 'parking', 'drives'];
+  optional.forEach(function (key) {
+    if (Object.prototype.hasOwnProperty.call(o, key) && !Array.isArray(o[key])) {
+      throw new Error(key + 'は配列である必要があります');
+    }
+  });
+  if (Object.prototype.hasOwnProperty.call(o, 'origin') && typeof o.origin !== 'string') {
+    throw new Error('出発地の形式が不正です');
+  }
+  var specs = [
+    {key:'places', fn:normalizePlace},
+    {key:'routes', fn:normalizeRoute},
+    {key:'rules', fn:normalizeRule},
+    {key:'parking', fn:normalizeParking},
+    {key:'drives', fn:normalizeDrive}
+  ];
+  var out = {};
+  specs.forEach(function (spec) {
+    if (!Array.isArray(o[spec.key])) {
+      out[spec.key] = null;
+      return;
+    }
+    var ids = Object.create(null);
+    out[spec.key] = o[spec.key].map(function (rec, i) {
+      if (!rec || typeof rec !== 'object' || Array.isArray(rec)) {
+        throw new Error(spec.key + '[' + (i + 1) + ']が不正です');
+      }
+      var norm = spec.fn(rec);
+      if (!norm) throw new Error(spec.key + '[' + (i + 1) + ']が空または不正です');
+      if (rec.id != null && String(rec.id).trim() && ids[String(rec.id)]) {
+        throw new Error(spec.key + '内でIDが重複しています');
+      }
+      if (rec.id != null && String(rec.id).trim()) ids[String(rec.id)] = true;
+      if (spec.key === 'routes') {
+        ['points','logs','avoids','prefers'].forEach(function (field) {
+          if (!Object.prototype.hasOwnProperty.call(rec, field)) return;
+          if (!Array.isArray(rec[field])) throw new Error('routes[' + (i + 1) + '].' + field + 'が配列ではありません');
+          // 古い形式のviaだけのルートも受け入れる。
+          if (field === 'points' && rec[field].length && rec[field].some(function (x) { return !normalizePoint(x); })) {
+            throw new Error('routes[' + (i + 1) + '].pointsに不正な地点があります');
+          }
+          if (field === 'logs' && rec[field].length !== norm.logs.length) throw new Error('routes[' + (i + 1) + '].logsに不正な行があります');
+          if (field === 'avoids' && rec[field].length !== norm.avoids.length) throw new Error('routes[' + (i + 1) + '].avoidsに不正な行があります');
+          if (field === 'prefers' && rec[field].length !== norm.prefers.length) throw new Error('routes[' + (i + 1) + '].prefersに不正な行があります');
+        });
+      }
+      return norm;
+    });
+  });
+  return {
+    places: out.places,
+    routes: out.routes,
+    rules: out.rules == null ? db.rules : out.rules,
+    parking: out.parking == null ? db.parking : out.parking,
+    drives: out.drives == null ? db.drives : out.drives,
+    origin: typeof o.origin === 'string' ? o.origin : db.origin
+  };
+}
+function restoreCounts(d) {
+  return '施設' + d.places.length + '件・ルート' + d.routes.length + '件・ルール' + d.rules.length + '件・乗降駐車' + d.parking.length + '件・走行' + d.drives.length + '件';
+}
+function refreshUndoRestoreState() {
+  var b = $('undoRestoreBtn');
+  var t = $('restoreSafetyStatus');
+  var available = false;
+  try { available = !!localStorage.getItem(RESTORE_UNDO_KEY); } catch (e) {}
+  if (b) b.disabled = !available;
+  if (t) t.textContent = available ? '直近の復元前データを端末に退避済み。次の復元で上書きされるため、別途JSON保存を推奨します。' : '復元直前の控えはまだありません。';
+}
+function atomicReplaceRestore(candidate, message, askUser) {
+  var serialized = JSON.stringify(candidate);
+  var oldRaw = localStorage.getItem(STORAGE_KEY);
+  var oldDb = db;
+  var oldLocked = storageLocked;
+  if (askUser && !confirm(message)) return false;
+  // 強い保証：現在の状態を控えに保管できない限り、復元しない。
+  var safetyRaw = oldRaw == null ? JSON.stringify(oldDb) : oldRaw;
+  localStorage.setItem(RESTORE_UNDO_KEY, safetyRaw);
+  if (localStorage.getItem(RESTORE_UNDO_KEY) !== safetyRaw) {
+    throw new Error('復元前の控えを確認できなかったので中止しました');
+  }
+  try {
+    localStorage.setItem(STORAGE_KEY, serialized);
+    if (localStorage.getItem(STORAGE_KEY) !== serialized) throw new Error('復元データの読返し検証に失敗しました');
+    db = candidate;
+    storageLocked = false;
+    afterDatasetReplace('バックアップを復元しました。以前の所要時間とルート選択を解除しました。新しい運転プランを確認してください。');
+    checkStorageContext();
+    refreshUndoRestoreState();
+    return true;
+  } catch (err) {
+    try {
+      if (oldRaw == null) localStorage.removeItem(STORAGE_KEY);
+      else localStorage.setItem(STORAGE_KEY, oldRaw);
+      if (localStorage.getItem(STORAGE_KEY) !== oldRaw) throw new Error('元データの確認に失敗');
+    } catch (rollbackErr) {
+      storageLocked = true;
+      throw new Error('書込失敗。元データの復旧も確認できません。直前の控えを保持しています。バックアップを確認してください');
+    }
+    db = oldDb;
+    storageLocked = oldLocked;
+    throw err;
+  }
+}
+function restoreFullBackup(o) {
+  var next = prepareStrictRestore(o);
+  var currentlyHasData = db.places.length || db.routes.length || db.rules.length || db.parking.length || db.drives.length;
+  var fileHasData = next.places.length || next.routes.length || (Array.isArray(o.rules) && o.rules.length) || (Array.isArray(o.parking) && o.parking.length) || (Array.isArray(o.drives) && o.drives.length);
+  if (currentlyHasData && !fileHasData) throw new Error('空のバックアップによる上書きを防止しました');
+  var missing = ['rules','parking','drives'].filter(function (k) { return !Object.prototype.hasOwnProperty.call(o,k); });
+  var msg = '復元前に全件検査しました。現在：' + restoreCounts(db) + '。復元後：' + restoreCounts(next) + '。';
+  if (missing.length) msg += '\n旧バックアップにない項目（' + missing.join('、') + '）は現在のデータを維持します。';
+  msg += '\n現在データを端末内に退避したうえで置き換えます。事前にJSONファイルも保存してください。続けますか？';
+  return atomicReplaceRestore(next, msg, true);
+}
+function undoLastRestore() {
+  try {
+    var saved = localStorage.getItem(RESTORE_UNDO_KEY);
+    if (!saved) return alert('戻せるデータがありません');
+    var before = prepareStrictRestore(JSON.parse(saved));
+    if (!confirm('直前の復元前データに戻します。現在の内容は置き換わります。事前にバックアップ済みですか？')) return;
+    // Undoの控えを上書きせず、戻したデータの確認のみ行う。
+    var currentRaw = localStorage.getItem(STORAGE_KEY);
+    var currentDb = db;
+    var serialized = JSON.stringify(before);
+    try {
+      localStorage.setItem(STORAGE_KEY, serialized);
+      if (localStorage.getItem(STORAGE_KEY) !== serialized) throw new Error('読返し不一致');
+      db = before;
+      storageLocked = false;
+      afterDatasetReplace('復元前データに戻しました。以前の運転プランは無効です。もう一度確認してください。');
+      checkStorageContext();
+      setState('復元前のデータに戻しました');
+      alert('復元前データに戻しました：' + restoreCounts(db));
+    } catch (e) {
+      try {
+        if (currentRaw == null) localStorage.removeItem(STORAGE_KEY);
+        else localStorage.setItem(STORAGE_KEY, currentRaw);
+        if (localStorage.getItem(STORAGE_KEY) !== currentRaw) throw new Error('前状態の読返しに失敗');
+        db = currentDb;
+      } catch (rollbackError) {
+        storageLocked = true;
+        setState('元に戻す処理に失敗・保存状態を確認してください');
+        throw new Error('書き戻し失敗後に復旧を確認できません。控えのJSONを保持して作業を中止してください');
+      }
+      throw e;
+    }
+  } catch (e) {
+    alert('元に戻せません：' + (e && e.message ? e.message : '不明'));
+  }
+}
+function applyImportedData(o, mode) {
+  if (!o || typeof o !== 'object') throw new Error('JSONの形式が正しくありません');
+  mode = mode || 'auto';
+  var full = !Array.isArray(o) && Array.isArray(o.places) && Array.isArray(o.routes);
+  if (mode === 'places' && full) {
+    alert('このファイルはバックアップです。「バックアップを復元」を使ってください');
+    return false;
+  }
+  if (mode === 'restore' && !full) {
+    alert('バックアップ形式ではありません。施設とルートを含むJSONを選んでください');
+    return false;
+  }
+  if (full && mode !== 'places') {
+    var placeCount = o.places.length;
+    var routeCount = o.routes.length;
+    var hasNow = db.places.length || db.routes.length || db.rules.length || (Array.isArray(db.parking) && db.parking.length) || (Array.isArray(db.drives) && db.drives.length);
+    if (!placeCount && !routeCount && hasNow) {
+      alert('中身が空のファイルでは、今のデータを置き換えません');
+      return false;
+    }
+    var nextPlaces = o.places.map(normalizePlace).filter(Boolean);
+    var nextRoutes = o.routes.map(normalizeRoute).filter(Boolean);
+    var nextRules = Array.isArray(o.rules) ? o.rules.map(normalizeRule).filter(Boolean) : null;
+    var nextParking = Array.isArray(o.parking) ? o.parking.map(normalizeParking).filter(Boolean) : null;
+    var nextDrives = Array.isArray(o.drives) ? o.drives.map(normalizeDrive).filter(Boolean) : null;
+    var nextUsable = nextPlaces.length || nextRoutes.length || (nextRules && nextRules.length) || (nextParking && nextParking.length) || (nextDrives && nextDrives.length);
+    if (hasNow && !nextUsable) {
+      alert('ファイルから読み取れる記録がありません。今のデータは残しています');
+      return false;
+    }
+    var nowPark = Array.isArray(db.parking) ? db.parking.length : 0;
+    var fileRules = Array.isArray(o.rules) ? ('ルール' + o.rules.length) : 'ルールはファイルに無いので現状維持';
+    var fileParks = Array.isArray(o.parking) ? ('乗降駐車' + o.parking.length) : '乗降駐車はファイルに無いので現状維持';
+    var fileDrives = Array.isArray(o.drives) ? ('走行実績' + o.drives.length) : '走行実績はファイルに無いので現状維持';
+    var nowDrives = Array.isArray(db.drives) ? db.drives.length : 0;
+    if (!confirm('今のデータを置き換えます。現在は施設' + db.places.length + '・ルート' + db.routes.length + '・ルール' + db.rules.length + '・乗降駐車' + nowPark + '・走行実績' + nowDrives + 'です。ファイルは施設' + placeCount + '・ルート' + routeCount + '・' + fileRules + '・' + fileParks + '・' + fileDrives + 'です。先にバックアップしてください。置き換えますか？')) return false;
+    db = {
+      places: nextPlaces,
+      routes: nextRoutes,
+      rules: nextRules == null ? db.rules : nextRules,
+      parking: nextParking == null ? db.parking : nextParking,
+      origin: typeof o.origin === 'string' ? o.origin : (db.origin || ''),
+      drives: nextDrives == null ? (Array.isArray(db.drives) ? db.drives : []) : nextDrives
+    };
+  } else {
+    var arr = Array.isArray(o) ? o : o.places;
+    if (!Array.isArray(arr)) throw new Error('placesがありません');
+    var keys = {};
+    function rememberPlace(place) {
+      var addr = foldName(place.address);
+      placeNameKeys(place).forEach(function (name) { keys[name + '|' + addr] = true; });
+    }
+    db.places.forEach(rememberPlace);
+    arr.forEach(function (p) {
+      var place = normalizePlace(p);
+      if (!place || !place.name) return;
+      var addr = foldName(place.address);
+      var dup = placeNameKeys(place).some(function (name) { return keys[name + '|' + addr]; });
+      if (dup) return;
+      rememberPlace(place);
+      place.id = nid('p');
+      db.places.push(place);
+    });
+  }
+  return true;
+}
+function readFileText(file) {
+  if (file && typeof file.text === 'function') return file.text();
+  return new Promise(function (resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function () { resolve(String(reader.result || '')); };
+    reader.onerror = function () { reject(new Error('ファイルを読めません')); };
+    reader.readAsText(file);
+  });
+}
+function refreshAllViews() {
+  syncOriginFields();
+  render();
+  renderRoutes();
+  renderRules();
+  renderParking();
+  renderDrives();
+  refreshTodayPlaces();
+  renderDataCounts();
+}
+function renderDataCounts() {
+  var el = $('dataCounts');
+  if (!el) return;
+  el.textContent = '施設 ' + db.places.length + ' / ルート ' + db.routes.length + ' / ルール ' + db.rules.length + ' / 乗降・駐車 ' + parkingArray().length + ' / 走行 ' + (Array.isArray(db.drives) ? db.drives.length : 0);
+}
+async function importFile(inputId, mode) {
+  var input = $(inputId || 'file');
+  var f = input && input.files && input.files[0];
+  if (!f) return alert('JSONファイルを選択');
+  var snapshot = JSON.parse(JSON.stringify(db));
+  try {
+    var text = await readFileText(f);
+    var o = JSON.parse(String(text).replace(/^\uFEFF/, '').trim());
+    if (mode === 'restore') {
+      if (!restoreFullBackup(o)) return;
+      setState('復元完了・端末内の読返し確認済み');
+      alert('復元しました：' + restoreCounts(db) + '。アプリを再起動して確認してください');
+      return;
+    }
+    if (!applyImportedData(o, mode || 'auto')) return;
+    if (!persist(true)) {
+      db = snapshot;
+      refreshAllViews();
+      alert('保存に失敗したため、取り込み前のデータに戻しました');
+      setState('エラー：保存に失敗しました。既存データは残しています');
+      return;
+    }
+    afterDatasetReplace('データを取り込みました。プランを再確認してください。');
+    alert(mode === 'restore'
+      ? '復元完了：施設' + db.places.length + '・ルート' + db.routes.length + '・ルール' + db.rules.length + '・乗降駐車' + parkingArray().length + '・走行実績' + (Array.isArray(db.drives) ? db.drives.length : 0)
+      : '取り込み完了：施設' + db.places.length);
+  } catch (e) {
+    if (!storageLocked) db = snapshot;
+    refreshAllViews();
+    alert('取り込みエラー：' + (e && e.message ? e.message : '不明'));
+    setState('エラー：' + (e && e.message ? e.message : '取り込みに失敗しました') + '。既存データは残しています');
+  } finally {
+    if (input) input.value = '';
+  }
+}
+var pendingAdviceImport = null;
+function adviceAddressKey(value) {
+  return foldName(value).replace(/東京都|東京|港区|中央区|渋谷区|新宿区|目黒区|千代田区|品川区|世田谷区|文京区|豊島区|台東区|中野区|杉並区|江東区|墨田区|大田区|北区|荒川区|板橋区|練馬区|足立区|葛飾区|江戸川区/g, '');
+}
+function adviceMatches(record) {
+  var name = foldName(record && record.name);
+  var address = adviceAddressKey(record && record.address);
+  if (!name || !address) return [];
+  return (db.places || []).filter(function(p) {
+    var a = adviceAddressKey(p.address);
+    // Require a unique, matching facility name AND a nonempty exact address.
+    return foldName(p.name) === name && !!a && a === address;
+  });
+}
+function cancelAdviceImport() {
+  pendingAdviceImport = null;
+  if ($('adviceActions')) $('adviceActions').classList.add('hidden');
+  if ($('advicePreview')) $('advicePreview').textContent = '取り込みをキャンセルしました。';
+  if ($('adviceFile')) $('adviceFile').value = '';
+}
+async function previewAdviceImport() {
+  pendingAdviceImport = null;
+  if ($('adviceActions')) $('adviceActions').classList.add('hidden');
+  var f = $('adviceFile') && $('adviceFile').files[0];
+  if (!f) return alert('調査メモJSONを選んでください');
+  try {
+    if (f.size > 500000) throw new Error('ファイルが大きすぎます');
+    var data = JSON.parse((await readFileText(f)).replace(/^\uFEFF/, ''));
+    if (data.purpose !== 'review_only_not_app_import' || !Array.isArray(data.records) || data.records.length > 100) throw new Error('専用の調査メモJSONではありません');
+    var matched = [], missing = 0, ambiguous = 0, existing = 0, seen = new Set();
+    data.records.forEach(function(rec) {
+      if (!rec || typeof rec !== 'object' || typeof rec.name !== 'string' || typeof rec.address !== 'string') { missing++; return; }
+      var candidates = adviceMatches(rec);
+      if (candidates.length === 1) {
+        var target = candidates[0];
+        if (asText(target.dropoffResearch).trim()) existing++;
+        else if (!seen.has(String(target.id))) { matched.push({id:String(target.id),record:rec}); seen.add(String(target.id)); }
+      }
+      else if (candidates.length > 1) ambiguous++;
+      else missing++;
+    });
+    pendingAdviceImport = matched;
+    $('advicePreview').textContent = '調査メモ' + data.records.length + '件 / 施設名・住所が一致 ' + matched.length + '件 / 不一致 ' + missing + '件 / 同名候補複数 ' + ambiguous + '件 / 既存メモ保護 ' + existing + '件。既存のメモを上書きせず、確認済みの降車地点としては扱いません。';
+    if (matched.length) $('adviceActions').classList.remove('hidden');
+  } catch(e) { $('advicePreview').textContent = '読み込み不可：' + (e.message || '形式不正'); }
+}
+function applyAdviceImport() {
+  if (!pendingAdviceImport || !pendingAdviceImport.length) return;
+  var updates = pendingAdviceImport.slice();
+  var savedCount = 0;
+  var ok = withSavedChange(function() {
+    updates.forEach(function(item) {
+      var p = placeById(item.id);
+      if (!p) throw new Error('施設が見つかりません');
+      if (asText(p.dropoffResearch).trim()) return;
+      var rec = item.record;
+      var text = [rec.advice, '根拠区分：' + asText(rec.evidence_level), '参照：' + asText(rec.source_url), '降車地点・規制は未確認。最終判断は運転者。'].join(' / ');
+      p.dropoffResearch = text.slice(0,1800);
+      savedCount++;
+    });
+  });
+  if (ok) { alert('調査メモを' + savedCount + '施設に保存しました。既存メモと運転ルールは変更していません。'); cancelAdviceImport(); }
+}
+function knowhowLevel(value) {
+  var t = asText(value).trim();
+  if (t === 'must' || t === '必須' || t === '必ず通る') return 'must';
+  if (t === 'avoid' || t === '回避') return 'avoid';
+  if (t === 'caution' || t === '注意') return 'caution';
+  if (!t || t === 'prefer' || t === '優先') return 'prefer';
+  return t;
+}
+function knowhowRuleKey(rule) {
+  return [rule.area, rule.point, rule.level, rule.turn, rule.time].map(function (x) { return asText(x).trim(); }).join('|');
+}
+function knowhowRouteKey(route) {
+  return [route.name, route.from, route.to].map(function (x) { return asText(x).trim(); }).join('|');
+}
+function knowhowItem(value) {
+  if (typeof value === 'string') return {point: value.trim()};
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  return value;
+}
+function rulesFromArea(area) {
+  if (!area || typeof area !== 'object' || Array.isArray(area)) return [];
+  var name = asText(area.area).trim() || '全方面';
+  var out = [];
+  function push(level, item) {
+    var src = knowhowItem(item);
+    if (!src) return;
+    var point = asText(src.point || src.road || src.name).trim();
+    if (!point) return;
+    var rule = normalizeRule({
+      area: name,
+      point: point,
+      level: knowhowLevel(level),
+      turn: asText(src.turn).trim(),
+      time: asText(src.time).trim() || 'いつでも',
+      memo: asText(src.memo || src.reason).trim()
+    });
+    if (rule) out.push(rule);
+  }
+  [['prefer', 'prefer'], ['avoid', 'avoid'], ['must', 'must'], ['cautions', 'caution'], ['caution', 'caution']].forEach(function (pair) {
+    var list = area[pair[0]];
+    if (!Array.isArray(list)) return;
+    list.forEach(function (item) { push(pair[1], item); });
+  });
+  return out;
+}
+function normalizeKnowhowRoute(route) {
+  var next = normalizeRoute(route);
+  if (!next) return null;
+  if (!next.name) next.name = [next.from, next.to].filter(Boolean).join(' → ') || 'ノウハウルート';
+  return next;
+}
+function knowhowBody(o) {
+  if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('JSONの形式が正しくありません');
+  if (o.knowhow && typeof o.knowhow === 'object' && !Array.isArray(o.knowhow)) {
+    return {body: o.knowhow, skippedPlaces: Array.isArray(o.places) ? o.places.length : 0};
+  }
+  if (Array.isArray(o.places) && Array.isArray(o.routes)) {
+    throw new Error('このファイルはバックアップです。「バックアップを復元」を使ってください');
+  }
+  if (Array.isArray(o.rules) || Array.isArray(o.routes) || Array.isArray(o.areas)) {
+    return {body: o, skippedPlaces: 0};
+  }
+  throw new Error('ノウハウのrules、areas、routesがありません');
+}
+function parseKnowhow(o) {
+  var src = knowhowBody(o);
+  var body = src.body;
+  var rules = [];
+  if (Array.isArray(body.rules)) {
+    body.rules.forEach(function (rule) {
+      if (!rule || typeof rule !== 'object') return;
+      var next = normalizeRule({
+        area: asText(rule.area).trim() || '全方面',
+        point: rule.point,
+        level: knowhowLevel(rule.level),
+        turn: asText(rule.turn).trim(),
+        time: asText(rule.time).trim() || 'いつでも',
+        memo: rule.memo
+      });
+      if (next && next.point) rules.push(next);
+    });
+  }
+  if (Array.isArray(body.areas)) {
+    body.areas.forEach(function (area) {
+      rules = rules.concat(rulesFromArea(area));
+    });
+  }
+  var routes = [];
+  if (Array.isArray(body.routes)) {
+    body.routes.forEach(function (route) {
+      var next = normalizeKnowhowRoute(route);
+      if (next) routes.push(next);
+    });
+  }
+  if (!rules.length && !routes.length) throw new Error('読み取れるノウハウがありません');
+  return {rules: rules, routes: routes, skippedPlaces: src.skippedPlaces};
+}
+function knowhowPlan(data) {
+  var ruleKeys = {};
+  var routeKeys = {};
+  (Array.isArray(db.rules) ? db.rules : []).forEach(function (rule) { ruleKeys[knowhowRuleKey(rule)] = true; });
+  (Array.isArray(db.routes) ? db.routes : []).forEach(function (route) { routeKeys[knowhowRouteKey(route)] = true; });
+  var seenRules = {};
+  var seenRoutes = {};
+  var freshRules = [];
+  var dupRules = [];
+  var freshRoutes = [];
+  var dupRoutes = [];
+  var fileDup = 0;
+  data.rules.forEach(function (rule) {
+    var key = knowhowRuleKey(rule);
+    if (seenRules[key]) { fileDup += 1; return; }
+    seenRules[key] = true;
+    if (ruleKeys[key]) dupRules.push(rule);
+    else freshRules.push(rule);
+  });
+  data.routes.forEach(function (route) {
+    var key = knowhowRouteKey(route);
+    if (seenRoutes[key]) { fileDup += 1; return; }
+    seenRoutes[key] = true;
+    if (routeKeys[key]) dupRoutes.push(route);
+    else freshRoutes.push(route);
+  });
+  return {freshRules: freshRules, dupRules: dupRules, freshRoutes: freshRoutes, dupRoutes: dupRoutes, fileDup: fileDup};
+}
+function knowhowLines(data) {
+  var plan = knowhowPlan(data);
+  var lines = [];
+  lines.push('ルール ' + data.rules.length + '件 / ルート ' + data.routes.length + '件');
+  lines.push('新しいルール ' + plan.freshRules.length + ' / 重複ルール ' + plan.dupRules.length);
+  lines.push('新しいルート ' + plan.freshRoutes.length + ' / 重複ルート ' + plan.dupRoutes.length);
+  if (data.skippedPlaces) lines.push('施設' + data.skippedPlaces + '件はこの取り込みでは追加しません');
+  if (plan.fileDup) lines.push('ファイル内の重複 ' + plan.fileDup + '件は1件として扱います');
+  function listRules(title, rows) {
+    if (!rows.length) return;
+    lines.push(title);
+    rows.slice(0, 8).forEach(function (rule) {
+      lines.push('- ' + [rule.area, rule.point, levelLabel(rule.level), rule.turn || '曲がり方なし', rule.time, rule.memo].filter(Boolean).join(' / '));
+    });
+    if (rows.length > 8) lines.push('ほか ' + (rows.length - 8) + '件');
+  }
+  function listRoutes(title, rows) {
+    if (!rows.length) return;
+    lines.push(title);
+    rows.slice(0, 8).forEach(function (route) {
+      var musts = pointsFromRoute(route).filter(function (p) { return p.priority === 'must'; }).map(function (p) { return p.place + ' ' + p.turn; });
+      var avoids = (route.avoids || []).map(function (a) { return a.road + (a.reason ? '（' + a.reason + '）' : ''); });
+      lines.push('- ' + route.name + ' / ' + (route.from || '出発地なし') + ' → ' + (route.to || '目的地なし') + ' / ' + (route.time || 'いつでも'));
+      if (musts.length) lines.push('  必須 ' + musts.join('、'));
+      if (avoids.length) lines.push('  回避 ' + avoids.join('、'));
+      if (route.memo) lines.push('  メモ ' + route.memo);
+    });
+    if (rows.length > 8) lines.push('ほか ' + (rows.length - 8) + '件');
+  }
+  listRules('新しいルール', plan.freshRules);
+  listRules('重複ルール', plan.dupRules);
+  listRoutes('新しいルート', plan.freshRoutes);
+  listRoutes('重複ルート', plan.dupRoutes);
+  if (!data.rules.length && !data.routes.length) lines.push('読み取れるノウハウがありません');
+  return lines.join('\n');
+}
+function showKnowhowPreview(text, actionable) {
+  var box = $('knowhowPreview');
+  var actions = $('knowhowActions');
+  if (box) {
+    box.textContent = text;
+    box.classList.remove('hidden');
+  }
+  if (actions) actions.classList.toggle('hidden', !actionable);
+}
+function previewKnowhow(inputId) {
+  var input = $(inputId || 'knowhowFile');
+  var f = input && input.files && input.files[0];
+  if (!f) return alert('JSONファイルを選択');
+  readFileText(f).then(function (text) {
+    var raw = String(text || '').replace(/^\uFEFF/, '').trim();
+    if (!raw) throw new Error('空のファイルです');
+    var data = parseKnowhow(JSON.parse(raw));
+    if (!data.rules.length && !data.routes.length) throw new Error('読み取れるノウハウがありません');
+    pendingKnowhow = data;
+    showKnowhowPreview(knowhowLines(data), true);
+  }).catch(function (e) {
+    pendingKnowhow = null;
+    showKnowhowPreview('確認できません：' + (e && e.message ? e.message : '不明') + '\n既存データは変更していません', false);
+    alert('確認エラー：' + (e && e.message ? e.message : '不明'));
+  }).then(function () {
+    if (input) input.value = '';
+  });
+}
+function mergeKnowhow(data, mode) {
+  var plan = knowhowPlan(data);
+  var ruleCount = 0;
+  var routeCount = 0;
+  if (!Array.isArray(db.rules)) db.rules = [];
+  if (!Array.isArray(db.routes)) db.routes = [];
+  plan.freshRules.forEach(function (rule) {
+    rule.id = nid('rule');
+    db.rules.push(rule);
+    ruleCount += 1;
+  });
+  plan.freshRoutes.forEach(function (route) {
+    route.id = nid('r');
+    db.routes.push(route);
+    routeCount += 1;
+  });
+  if (mode === 'update') {
+    plan.dupRules.forEach(function (rule) {
+      var key = knowhowRuleKey(rule);
+      var current = db.rules.find(function (item) { return knowhowRuleKey(item) === key; });
+      if (!current) return;
+      current.area = rule.area;
+      current.point = rule.point;
+      current.level = rule.level;
+      current.turn = rule.turn;
+      current.time = rule.time;
+      current.memo = rule.memo;
+      ruleCount += 1;
+    });
+    plan.dupRoutes.forEach(function (route) {
+      var key = knowhowRouteKey(route);
+      var current = db.routes.find(function (item) { return knowhowRouteKey(item) === key; });
+      if (!current) return;
+      var id = current.id;
+      current.name = route.name;
+      current.from = route.from;
+      current.to = route.to;
+      current.time = route.time;
+      current.memo = route.memo;
+      current.points = route.points;
+      current.avoids = route.avoids;
+      current.via = route.via;
+      current.id = id;
+      routeCount += 1;
+    });
+  }
+  return {changed: ruleCount + routeCount > 0, rules: ruleCount, routes: routeCount};
+}
+function applyKnowhow(mode) {
+  if (!pendingKnowhow) return alert('先に内容を確認してください');
+  var snapshot = JSON.parse(JSON.stringify(db));
+  try {
+    var result = mergeKnowhow(pendingKnowhow, mode === 'update' ? 'update' : 'add');
+    if (!result.changed) {
+      alert(mode === 'update' ? '更新する差分はありません' : '追加できる新しい項目はありません。重複はそのまま残しています');
+      return;
+    }
+    if (!persist(true)) {
+      db = snapshot;
+      refreshAllViews();
+      alert('保存に失敗したため、取り込み前のデータに戻しました');
+      return;
+    }
+    refreshAllViews();
+    alert((mode === 'update' ? 'ノウハウを更新しました。' : 'ノウハウを追加しました。') + 'ルール' + result.rules + '・ルート' + result.routes);
+    cancelKnowhow();
+  } catch (e) {
+    if (!storageLocked) db = snapshot;
+    refreshAllViews();
+    alert('取り込みエラー：' + (e && e.message ? e.message : '不明') + '。既存データは残しています');
+    setState('エラー：' + (e && e.message ? e.message : '取り込みに失敗しました') + '。既存データは残しています');
+  }
+}
+function cancelKnowhow() {
+  pendingKnowhow = null;
+  var box = $('knowhowPreview');
+  var actions = $('knowhowActions');
+  if (box) {
+    box.textContent = '';
+    box.classList.add('hidden');
+  }
+  if (actions) actions.classList.add('hidden');
+  var input = $('knowhowFile');
+  if (input) input.value = '';
+}
+function backupJson() {
+  return JSON.stringify(db, null, 2);
+}
+function showBackupText(json) {
+  var box = $('backupText');
+  var wrap = $('backupView');
+  if (!box) return;
+  box.value = json;
+  box.classList.remove('hidden');
+  if (wrap) wrap.open = true;
+}
+function revealBackup() {
+  var box = $('backupText');
+  var wrap = $('backupView');
+  if (box && box.value && wrap && wrap.open) {
+    wrap.open = false;
+    return;
+  }
+  try { showBackupText(backupJson()); }
+  catch (e) { alert('書き出しエラー：' + (e && e.message ? e.message : '不明')); }
+}
+function backup() {
+  var json;
+  try { json = backupJson(); }
+  catch (e) { alert('書き出しエラー：' + e.message); return; }
+  var saved = false;
+  try {
+    var blob = new Blob([json], {type: 'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'POLI_ROUTE_backup.json';
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    if (a.parentNode) a.parentNode.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+    saved = true;
+  } catch (e) {
+    showBackupText(json);
+    alert('ファイル保存を開始できませんでした。表示されたJSONを長押ししてコピーしてください');
+  }
+  var msg = $('backupMsg');
+  if (msg) msg.textContent = saved
+    ? '端末への保存を開始しました。始まらない場合は「JSONをコピー」か「内容を表示」を使ってください。'
+    : 'ファイル保存を開始できませんでした。表示されたJSONを長押ししてコピーしてください。';
+  setState('バックアップを作成しました（端末内）');
+}
+function copyBackup() {
+  var json;
+  try { json = backupJson(); }
+  catch (e) { alert('書き出しエラー：' + e.message); return; }
+  showBackupText(json);
+  var box = $('backupText');
+  if (box) {
+    box.focus();
+    box.select();
+    try { box.setSelectionRange(0, box.value.length); } catch (e) {}
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(json).then(function () {
+      alert('JSONをコピーしました。メモなどに貼り付けて保存してください');
+    }).catch(function () {
+      alert('自動コピーは使えません。表示されたJSONを長押ししてコピーしてください');
+    });
+    return;
+  }
+  alert('表示されたJSONを長押ししてコピーしてください');
+}
+function loadStored() {
+  var raw = null;
+  try { raw = localStorage.getItem(STORAGE_KEY); }
+  catch (e) { storageLocked = true; setState('保存領域を利用できません。変更内容は保持できません'); return; }
+  if (!raw) return;
+  try {
+    // Do not silently discard malformed records on startup: the next write
+    // would otherwise irreversibly replace the original, complete JSON.
+    var restored = prepareStrictRestore(JSON.parse(raw));
+    db = restored;
+    storageLocked = false;
+  } catch (e) {
+    storageLocked = true;
+    setState('保存データに不正または不完全な記録があります。上書きを停止しました。バックアップを確認してください');
+  }
+}
+
+function syncOriginFields() {
+  var value = db.origin || '';
+  if ($('origin')) $('origin').value = value;
+  if ($('todayOrigin')) $('todayOrigin').value = value;
+}
+function bindOrigin(id) {
+  var el = $(id);
+  if (!el || el.getAttribute('data-origin-bound')) return;
+  el.setAttribute('data-origin-bound', '1');
+  el.addEventListener('change', function () {
+    var next = el.value.trim();
+    if (!withSavedChange(function () { db.origin = next; })) return;
+    syncOriginFields();
+  });
+}
+function bindSuggest(inputId, boxId) {
+  var input = $(inputId);
+  var box = $(boxId);
+  if (!input || !box || input.getAttribute('data-suggest-bound')) return;
+  input.setAttribute('data-suggest-bound', '1');
+  input.removeAttribute('list');
+  var hide = function () {
+    box.classList.add('hidden');
+    clearNode(box);
+  };
+  var show = function () {
+    var q = input.value.trim().toLowerCase();
+    clearNode(box);
+    if (!q) { box.classList.add('hidden'); return; }
+    var folded = foldName(q);
+    var hits = (Array.isArray(db.places) ? db.places : []).filter(function (p) {
+      return placeNameKeys(p).concat([foldName(p && p.ward), foldName(p && p.address)]).some(function (s) {
+        return s && (s.indexOf(folded) !== -1 || [p && p.name, p && p.ward, p && p.address].join(' ').toLowerCase().includes(q));
+      });
+    }).slice(0, 8);
+    if (!hits.length) { box.classList.add('hidden'); return; }
+    hits.forEach(function (p) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      var label = placeLabel(p);
+      b.textContent = asText(p.name) + (label ? ' / ' + label : '');
+      var choose = function (event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        input.value = asText(p.name);
+        if (inputId === 'parkPlace') {
+          var addr = $('parkAddress');
+          if (addr && !addr.value.trim()) addr.value = placeAddress(p);
+        }
+        hide();
+        if (inputId === 'todayDest' && v('todayDate') && v('todayTime')) buildToday();
+      };
+      b.addEventListener('pointerdown', choose);
+      b.addEventListener('click', choose);
+      box.appendChild(b);
+    });
+    box.classList.remove('hidden');
+  };
+  input.addEventListener('input', show);
+  input.addEventListener('blur', function () { setTimeout(hide, 400); });
+}
+function onActionClick(e) {
+  var node = e.target;
+  if (node && node.nodeType === 3) node = node.parentElement;
+  var b = node && node.closest ? node.closest('button[data-act]') : null;
+  if (!b) return;
+  var act = b.getAttribute('data-act');
+  var id = b.getAttribute('data-id');
+  try {
+    if (act === 'place-nav') navPlace(id);
+    else if (act === 'place-route') makeRoute(id);
+    else if (act === 'place-park') parkingForPlace(id);
+    else if (act === 'place-edit') editPlace(id);
+    else if (act === 'place-del') deletePlace(id);
+    else if (act === 'route-nav') navRoute(id);
+    else if (act === 'route-edit') editRoute(id);
+    else if (act === 'route-run') openRunLog(id);
+    else if (act === 'route-del') delRoute(id);
+    else if (act === 'drive-del') deleteDrive(id);
+    else if (act === 'prefer-del') removeDraftPrefer(id);
+    else if (act === 'point-up') moveDraftPoint(id, -1);
+    else if (act === 'point-down') moveDraftPoint(id, 1);
+    else if (act === 'point-del') removeDraftPoint(id);
+    else if (act === 'avoid-del') removeDraftAvoid(id);
+    else if (act === 'rule-edit') editRule(id);
+    else if (act === 'rule-del') deleteRule(id);
+    else if (act === 'park-nav') openParking(id);
+    else if (act === 'park-edit') editParking(id);
+    else if (act === 'park-del') deleteParking(id);
+  } catch (err) {
+    alert('操作に失敗：' + (err && err.message ? err.message : '不明'));
+    setState('エラー：' + (err && err.message ? err.message : '操作に失敗しました'));
+  }
+}
+function bindStatic() {
+  if (document.body.getAttribute('data-poli-bound')) return;
+  document.body.setAttribute('data-poli-bound', '1');
+  document.addEventListener('click', onActionClick);
+  bindOrigin('origin');
+  bindOrigin('todayOrigin');
+  bindSuggest('todayDest', 'todaySuggest');
+  bindSuggest('destination', 'destSuggest');
+  bindSuggest('parkPlace', 'parkSuggest');
+  bindSuggest('rp', 'rpSuggest');
+  bindPlanChanges();
+  ['todayDest', 'todayDate', 'todayTime', 'todayDrive', 'todayBuffer', 'todayOrigin'].forEach(function (id) {
+    var el = $(id);
+    if (!el || el.getAttribute('data-today-bound')) return;
+    el.setAttribute('data-today-bound', '1');
+    el.addEventListener('input', scheduleToday);
+    el.addEventListener('change', scheduleToday);
+  });
+  var driveInput = $('todayDrive');
+  if (driveInput && !driveInput.getAttribute('data-manual-bound')) {
+    driveInput.setAttribute('data-manual-bound', '1');
+    driveInput.addEventListener('input', function () {
+      lastTrafficPlan = null;
+    });
+  }
+  var fields = document.querySelectorAll('input[type="text"], textarea, input:not([type])');
+  for (var i = 0; i < fields.length; i++) {
+    fields[i].setAttribute('autocorrect', 'off');
+    fields[i].setAttribute('autocapitalize', 'off');
+    fields[i].setAttribute('spellcheck', 'false');
+  }
+}
+function addRule() {
+  if (!v('rulePoint')) return alert('道路・交差点を入力');
+  var rule = {
+    id: nid('rule'),
+    area: v('ruleArea') || '全方面',
+    point: v('rulePoint'),
+    level: v('ruleLevel'),
+    turn: v('ruleTurn'),
+    time: v('ruleTime'),
+    memo: v('ruleMemo')
+  };
+  if (!withSavedChange(function () { db.rules.push(rule); })) return;
+  ['ruleArea', 'rulePoint', 'ruleMemo'].forEach(function (x) { if ($(x)) $(x).value = ''; });
+  renderRules();
+}
+function renderRules() {
+  var box = $('rulesList');
+  if (!box) return;
+  var rules = Array.isArray(db.rules) ? db.rules : [];
+  box.innerHTML = rules.map(function (r) {
+    return '<div class="item">' + levelChip(r.level) + '<b>' + esc(r.point) + '</b> ' + esc(turnText(r.turn)) +
+      '<p class="muted">' + esc(r.area) + ' / ' + esc(r.time || 'いつでも') + (r.memo ? ' / ' + esc(r.memo) : '') + '</p><div class="buttons">' +
+      htmlBtn('rule-edit', r.id, '編集') + htmlBtn('rule-del', r.id, '削除') + '</div></div>';
+  }).join('') || '<p class="muted">ルールはまだありません。</p>';
+}
+function editRule(id) {
+  var r = db.rules.find(function (item) { return item && String(item.id) === String(id); });
+  if (!r) return;
+  var p = prompt('道路・交差点', r.point);
+  if (p === null) return;
+  var m = prompt('理由・注意点', r.memo);
+  if (m === null) return;
+  if (!withSavedChange(function () {
+    r.point = p;
+    r.memo = m;
+  })) return;
+  renderRules();
+}
+function deleteRule(id) {
+  if (!confirm('削除しますか？')) return;
+  if (!withSavedChange(function () {
+    db.rules = db.rules.filter(function (x) { return x && String(x.id) !== String(id); });
+  })) return;
+  renderRules();
+}
+function calculateDeparture() {
+  var d = v('arrivalDate');
+  var t = v('arrivalTime');
+  var mins = Number(v('driveMinutes'));
+  var buffer = Number(v('bufferMinutes'));
+  if (!d || !t || !isFinite(mins) || mins <= 0) return alert('到着日時と予測走行時間を入力');
+  var dt = parseLocalDateTime(d, t);
+  if (!dt) return alert('日時が不正です');
+  dt.setMinutes(dt.getMinutes() - mins - buffer);
+  var box = $('departureResult');
+  if (!box) return;
+  box.innerHTML = '<b style="font-size:24px;color:#a8d8ff">' + formatDeparture(dt) + ' 出発</b><p>走行' + mins + '分 ＋ 余裕' + buffer + '分</p><p>※交通予測ではなく手入力に基づく試算。必須ルートの実走行時間は未検証。</p>';
+}
+function plannerMap() {
+  if (!v('destination')) return alert('目的地を入力してください');
+  maps(v('destination'), v('origin'));
+}
+function parkingArray() {
+  if (!Array.isArray(db.parking)) db.parking = [];
+  return db.parking;
+}
+function validPrice(price) {
+  return price === '' || /^\d+$/.test(price);
+}
+function saveParking() {
+  var place = v('parkPlace');
+  var name = v('parkName');
+  var drop = v('dropoff');
+  var price = v('parkPrice');
+  if (!place) return alert('施設名を入力してください');
+  if (!name && !drop) return alert('乗降メモまたは駐車場名を入力してください');
+  if (!validPrice(price)) return alert('料金は0以上の整数にしてください');
+  var linkedPlace = findPlaceExact(place);
+  var row = {
+    id: nid('pk'),
+    place: place,
+    placeId: linkedPlace ? String(linkedPlace.id) : '',
+    address: v('parkAddress'),
+    dropoff: drop,
+    walkMinutes: v('dropWalk'),
+    crossing: v('dropCrossing'),
+    approach: v('dropApproach'),
+    status: v('dropStatus'),
+    name: name,
+    location: v('parkLocation'),
+    mode: v('parkMode'),
+    price: price,
+    duration: v('parkDuration'),
+    checked: v('parkChecked'),
+    memo: v('parkMemo')
+  };
+  if (!withSavedChange(function () { parkingArray().unshift(row); })) return;
+  ['parkPlace', 'parkAddress', 'dropoff', 'dropWalk', 'dropApproach', 'parkName', 'parkLocation', 'parkPrice', 'parkMemo'].forEach(function (k) {
+    if ($(k)) $(k).value = '';
+  });
+  renderParking();
+  alert('保存しました');
+}
+function renderParking() {
+  var box = $('parkingList');
+  if (!box) return;
+  var q = v('parkSearch').toLowerCase();
+  var rows = parkingArray().filter(function (p) {
+    return [p.place, p.name, p.address, p.location].join(' ').toLowerCase().includes(q);
+  });
+  box.innerHTML = rows.map(function (p) {
+    var price = (p.price !== '' && p.price != null) ? (esc(p.price) + '円 / ' + esc(p.duration || '?') + '分') : '未登録';
+    return '<div class="item">' + modeChip(p.mode) + '<b>' + esc(p.place) + '</b><p class="muted">乗降：' + esc(p.dropoff || '未登録') + '（' + esc(p.status || '未登録') + '）<br>駐車：' +
+      esc(p.name || '未登録') + (p.location ? ' / ' + esc(p.location) : '') + '<br>参考料金：' + price +
+      '　確認日：' + esc(p.checked || '未登録') + (p.memo ? '<br>' + esc(p.memo) : '') + '</p><div class="buttons">' +
+      (asText(p.location).trim() ? htmlBtn('park-nav', p.id, '駐車場へナビ') : '') +
+      htmlBtn('park-edit', p.id, '編集') +
+      htmlBtn('park-del', p.id, '削除') +
+      '</div></div>';
+  }).join('') || '<p class="muted">まだ登録がありません。</p>';
+}
+function openParking(id) {
+  var p = parkingArray().find(function (x) { return x && String(x.id) === String(id); });
+  if (!p) return;
+  var destination = asText(p.location).trim();
+  if (!destination) { alert('駐車場の住所が未登録です。施設の住所へ誤案内しないため、ナビを開きません。'); return; }
+  maps(destination);
+}
+function editParking(id) {
+  var p = parkingArray().find(function (x) { return x && String(x.id) === String(id); });
+  if (!p) return;
+  var drop = prompt('安全な乗降位置・徒歩案内', p.dropoff || '');
+  if (drop === null) return;
+  var memo = prompt('駐車場の注意点', p.memo || '');
+  if (memo === null) return;
+  var price = prompt('参考料金（円・空欄可）', p.price || '');
+  if (price === null) return;
+  if (price !== '' && !/^\d+$/.test(price)) return alert('料金は0以上の整数にしてください');
+  if (!withSavedChange(function () {
+    p.dropoff = drop;
+    p.memo = memo;
+    p.price = price;
+  })) return;
+  renderParking();
+}
+function deleteParking(id) {
+  if (!confirm('この記録を削除しますか？')) return;
+  if (!withSavedChange(function () {
+    db.parking = parkingArray().filter(function (x) { return x && String(x.id) !== String(id); });
+  })) return;
+  renderParking();
+}
+function findPlaceExact(q) {
+  var query = foldName(q);
+  if (!query) return null;
+  return (Array.isArray(db.places) ? db.places : []).find(function (p) {
+    return placeNameKeys(p).indexOf(query) !== -1;
+  }) || null;
+}
+function findPlace(q) {
+  var query = foldName(q);
+  if (!query) return null;
+  var places = Array.isArray(db.places) ? db.places : [];
+  return places.find(function (p) {
+    return placeNameKeys(p).indexOf(query) !== -1 || foldName(p && p.address) === query;
+  }) || places.find(function (p) {
+    return placeNameKeys(p).some(function (name) { return name.indexOf(query) !== -1; });
+  }) || null;
+}
+function todayMatches() {
+  var q = v('todayDest');
+  if (!foldName(q)) return {place: null, routes: [], parking: [], rules: []};
+  var place = findPlace(q);
+  var terms = [q.toLowerCase()];
+  if (place) {
+    [place.name, place.address, place.ward].concat(place.aliases || []).forEach(function (value) {
+      var term = asText(value).toLowerCase();
+      if (term && terms.indexOf(term) === -1) terms.push(term);
+    });
+  }
+  var match = function (s) {
+    var hay = asText(s).toLowerCase();
+    return terms.some(function (t) { return t && hay.includes(t); });
+  };
+  var seen = {};
+  var routes = (Array.isArray(db.routes) ? db.routes : []).filter(function (r) {
+    if (!r || seen[r.id]) return false;
+    var hit = place && asText(r.placeId)
+      ? routeMatchesPlace(r, place)
+      : ((place && routeMatchesPlace(r, place)) || match(r.to) || match(r.name));
+    if (hit) seen[r.id] = true;
+    return hit;
+  });
+  return {
+    place: place,
+    routes: routes,
+    parking: parkingArray().filter(function (p) {
+      if (place && asText(p && p.placeId)) return parkingMatchesPlace(p, place);
+      return (place && parkingMatchesPlace(p, place)) || match(p && p.place) || match(p && p.address);
+    }),
+    rules: (Array.isArray(db.rules) ? db.rules : []).filter(function (r) { return asText(r && r.area) === '全方面' || match(r && r.area); })
+  };
+}
+function refreshTodayPlaces() {
+  var list = $('placeSuggestions');
+  if (!list) return;
+  clearNode(list);
+  (Array.isArray(db.places) ? db.places : []).slice(0, 500).forEach(function (p) {
+    if (!p || !p.name) return;
+    var o = document.createElement('option');
+    o.value = p.name;
+    list.appendChild(o);
+  });
+}
+function todayMap() {
+  var d = v('todayDest');
+  if (!d) return alert('目的地を入力してください');
+  var m = todayMatches();
+  var to = m.place ? (placeLabel(m.place) || m.place.name) : d;
+  maps(to, v('todayOrigin'));
+}
+function renderDropoffResearch(root, raw) {
+  var original = asText(raw).trim();
+  if (!original) return;
+  addBlock(root, 'h3', '降車アドバイス（停車場所は未確認）');
+  var chunks = original.split(/\s*\/\s*(?=根拠区分：|参照：|降車地点・規制は未確認)/);
+  var advice = chunks[0].trim();
+  var evidence = chunks.find(function(x){return x.indexOf('根拠区分：') === 0;}) || '';
+  var source = chunks.find(function(x){return x.indexOf('参照：') === 0;}) || '';
+  if (!evidence && !source) {
+    addBlock(root, 'p', original, 'muted');
+    return;
+  }
+  addBlock(root, 'p', advice || '店舗前の停車可否と進入方向を確認してください。');
+  addBlock(root, 'p', '停車規制・進入方向・徒歩動線は未確認。現地で確認し、最終判断は運転者が行ってください。', 'muted');
+  var details = document.createElement('details');
+  var summary = document.createElement('summary');
+  summary.textContent = '根拠・参照元を見る';
+  details.appendChild(summary);
+  var evidenceP = document.createElement('p');
+  evidenceP.className = 'muted';
+  evidenceP.textContent = evidence || '根拠区分：未登録';
+  details.appendChild(evidenceP);
+  if (source) {
+    var sourceP = document.createElement('p');
+    sourceP.className = 'muted';
+    sourceP.textContent = source;
+    details.appendChild(sourceP);
+  }
+  root.appendChild(details);
+}
+function addBlock(root, tag, txt, cls) {
+  var el = document.createElement(tag);
+  el.textContent = txt;
+  if (cls) el.className = cls;
+  if (tag === 'button') el.type = 'button';
+  root.appendChild(el);
+  return el;
+}
+function timeBand(timeStr) {
+  var tm = /^(\d{2}):(\d{2})/.exec(String(timeStr || '').trim());
+  if (!tm) return '';
+  var h = Number(tm[1]);
+  if (h >= 5 && h < 11) return '朝';
+  if (h >= 11 && h < 16) return '昼';
+  if (h >= 16 && h < 19) return '夕方';
+  return '夜';
+}
+function savedBandOk(saved, band) {
+  var t = asText(saved).trim();
+  if (!t || t === 'いつでも') return true;
+  return !!band && t === band;
+}
+function textHit(hay, needle) {
+  var h = asText(hay).toLowerCase().replace(/\s+/g, '');
+  var n = asText(needle).toLowerCase().replace(/\s+/g, '');
+  if (!h || !n) return false;
+  return h.indexOf(n) !== -1 || n.indexOf(h) !== -1;
+}
+function termHit(s, terms) {
+  var hay = asText(s).toLowerCase();
+  return terms.some(function (t) { return t && hay.indexOf(t) !== -1; });
+}
+function routeHasPlace(route, pointName) {
+  var name = asText(pointName).trim();
+  if (!name) return false;
+  return pointsFromRoute(route).some(function (p) { return textHit(p.place, name); });
+}
+function missingMustRules(route, rules) {
+  return rules.filter(function (rule) {
+    return asText(rule && rule.point).trim() && !routeHasPlace(route, rule.point);
+  });
+}
+function joinLabels(list) {
+  return list.filter(Boolean).join('、');
+}
+function priceLine(p) {
+  var price = asText(p && p.price).trim();
+  var dur = asText(p && p.duration).trim();
+  var checked = asText(p && p.checked).trim();
+  var fee = /^\d+$/.test(price) ? price + '円' : '未登録';
+  var span = /^\d+$/.test(dur) ? dur + '分' : '未登録';
+  var freshness = '';
+  if (checked && /^\d{4}-\d{2}-\d{2}$/.test(checked)) {
+    var checkedDate = new Date(checked + 'T00:00:00');
+    var ageDays = Math.floor((new Date() - checkedDate) / 86400000);
+    if (Number.isFinite(ageDays) && ageDays > 30) freshness = ' / 料金は30日以上前の情報です。要再確認';
+  }
+  return '参考料金：' + fee + ' / 対象時間：' + span + ' / 確認日：' + (checked || '未登録') + freshness;
+}
+function addTimeGrid(root, depart, arrive, buffer) {
+  var grid = document.createElement('div');
+  grid.className = 'times';
+  [['出発', depart], ['到着', arrive], ['余裕', buffer]].forEach(function (pair) {
+    var cell = document.createElement('div');
+    if (pair[0] === '出発') cell.className = pair[1] === '未登録' ? 'depart is-empty' : 'depart';
+    var label = document.createElement('span');
+    label.textContent = pair[0];
+    var val = document.createElement('b');
+    val.textContent = pair[1];
+    cell.appendChild(label);
+    cell.appendChild(val);
+    grid.appendChild(cell);
+  });
+  root.appendChild(grid);
+}
+function addSteps(parent, points) {
+  if (!points.length) {
+    addBlock(parent, 'p', '交差点指示：未登録', 'muted');
+    return;
+  }
+  var ol = document.createElement('ol');
+  points.forEach(function (p) {
+    var li = document.createElement('li');
+    li.textContent = p.place + '　' + turnText(p.turn) + '（' + priorityLabel(p.priority) + '）';
+    ol.appendChild(li);
+  });
+  parent.appendChild(ol);
+}
+function uniqueLabel(list, value) {
+  var text = asText(value).trim();
+  if (text && list.indexOf(text) === -1) list.push(text);
+}
+function collectRouteConstraints() {
+  var matched = todayMatches();
+  var must = [];
+  var turns = [];
+  var prefers = [];
+  var avoids = [];
+  var ruleTurns = 0;
+  (matched.routes || []).forEach(function (route) {
+    pointsFromRoute(route).forEach(function (point) {
+      if (point.priority === 'must') uniqueLabel(must, point.place);
+      var turn = asText(point.turn).trim();
+      if (turn && turn !== '通過') uniqueLabel(turns, point.place + ' ' + turn);
+    });
+    (Array.isArray(route.prefers) ? route.prefers : []).forEach(function (row) { uniqueLabel(prefers, row.road); });
+    (Array.isArray(route.avoids) ? route.avoids : []).forEach(function (row) { uniqueLabel(avoids, row.road); });
+  });
+  // 旧形式の運転ルールは通過地点・進入方向を検証できない。
+  // Googleマップの経由地や優先・回避条件へ勝手に適用しない。
+  // 確認済みルートの地点情報のみ使用する。
+  return {
+    via: must.slice(0, MAP_WAYPOINTS),
+    omittedVia: must.slice(MAP_WAYPOINTS),
+    turns: turns,
+    prefers: prefers,
+    avoids: avoids,
+    ruleTurns: ruleTurns
+  };
+}
+function briefLabels(list) {
+  if (!list.length) return '';
+  if (list.length <= 3) return list.join('、');
+  return list.slice(0, 3).join('、') + '、ほか' + (list.length - 3) + '件';
+}
+function trafficPlanKey() {
+  var constraints = collectRouteConstraints();
+  return [v('todayOrigin') || db.origin || '', v('todayDest'), v('todayDate'), v('todayTime'), v('todayBuffer'), constraints.via.join('|')].join('\n');
+}
+function trafficPlanForCurrent() {
+  if (!lastTrafficPlan || lastTrafficPlan.key !== trafficPlanKey()) return null;
+  return lastTrafficPlan;
+}
+function clockText(dt) {
+  return pad2(dt.getHours()) + ':' + pad2(dt.getMinutes());
+}
+function departLabel(dt, arrivalDate) {
+  if (localISODate(dt) !== arrivalDate) return localISODate(dt) + ' ' + clockText(dt);
+  return clockText(dt);
+}
+function mockTrafficPredict(departure) {
+  mockTrafficSeq += 1;
+  if (mockTrafficProfile === 'fail') return {ok: false, error: 'mock-fail'};
+  if (mockTrafficProfile === 'second-fail' && mockTrafficSeq >= 2) return {ok: false, error: 'mock-fail'};
+  var minutes = 40;
+  if (mockTrafficProfile === 'shift') minutes = departure.getMinutes() >= 30 ? 55 : 20;
+  else if (mockTrafficProfile === 'evening') {
+    var hour = departure.getHours();
+    minutes = (hour >= 16 && hour < 19) ? 50 : 30;
+  }
+  return {ok: true, minutes: minutes, source: 'テスト用予測'};
+}
+function routesApiPredict() {
+  return {ok: false, error: 'routes-disabled'};
+}
+function trafficPredict(departure) {
+  if (trafficBackend !== 'mock') return routesApiPredict(departure);
+  return mockTrafficPredict(departure);
+}
+function computeDeparture(arrival, bufferMin, predict) {
+  var seed = 30;
+  var depart = new Date(arrival.getTime() - (bufferMin + seed) * 60000);
+  var samples = [];
+  var calls = 0;
+  while (calls < TRAFFIC_REQUEST_LIMIT) {
+    calls += 1;
+    var result = predict(depart, calls);
+    if (!result || result.ok === false || !isFinite(Number(result.minutes)) || Number(result.minutes) <= 0) {
+      if (!samples.length) return {status: 'fallback', calls: calls, error: result && result.error ? result.error : 'invalid'};
+      return {status: 'partial', depart: samples[0].implied, drive: samples[0].drive, calls: calls, spread: 0, source: 'テスト用予測'};
+    }
+    var drive = Number(result.minutes);
+    var implied = new Date(arrival.getTime() - (bufferMin + drive) * 60000);
+    samples.push({queried: depart, drive: drive, implied: implied});
+    if (Math.abs(implied.getTime() - depart.getTime()) <= 60000) {
+      return {status: 'ok', depart: implied, drive: drive, calls: calls, spread: 0, source: 'テスト用予測'};
+    }
+    depart = implied;
+  }
+  var early = samples[0];
+  var late = samples[0];
+  samples.forEach(function (sample) {
+    if (sample.implied < early.implied) early = sample;
+    if (sample.implied > late.implied) late = sample;
+  });
+  var spread = Math.round((late.implied.getTime() - early.implied.getTime()) / 60000);
+  if (spread <= 1) return {status: 'ok', depart: early.implied, drive: early.drive, calls: calls, spread: 0, source: 'テスト用予測'};
+  return {status: 'split', depart: early.implied, other: late.implied, drive: early.drive, otherDrive: late.drive, calls: calls, spread: spread, source: 'テスト用予測'};
+}
+function renderTrafficNotes(root, traffic, arrivalDate) {
+  addBlock(root, 'p', 'テスト用予測です。未来の交通の確定値ではなく、到着を保証しません。', 'warn');
+  if (traffic.status === 'split') {
+    addBlock(root, 'p', '予測が分かれました。安全側の出発を表示しています。差は' + traffic.spread + '分です。もう一方は' + departLabel(traffic.other, arrivalDate) + 'です。', 'warn');
+  }
+  if (traffic.status === 'partial') addBlock(root, 'p', '2回目の予測は取得できませんでした。1回目の結果を表示しています。', 'warn');
+  if (traffic.depart && traffic.depart.getTime() < Date.now()) addBlock(root, 'p', 'この出発時刻は現在より前です。', 'warn');
+  var constraints = traffic.constraints || {via: [], omittedVia: [], turns: [], prefers: [], avoids: [], ruleTurns: 0};
+  if (constraints.via.length) addBlock(root, 'p', '経由に含められる必須地点：' + briefLabels(constraints.via), 'muted');
+  else addBlock(root, 'p', '必須地点は未登録です。経由なしの予測です。', 'muted');
+  if (constraints.omittedVia.length) addBlock(root, 'p', '4件目以降の必須地点は経由に含めていません：' + briefLabels(constraints.omittedVia), 'warn');
+  addBlock(root, 'p', '経由地点を指定しても、右折・左折・直進は保証されません。', 'warn');
+  if (constraints.turns.length) addBlock(root, 'p', 'ルートに記録された曲がり方：' + briefLabels(constraints.turns), 'muted');
+  if (constraints.ruleTurns) addBlock(root, 'p', '運転ルールの曲がり方は経路に反映できません。', 'muted');
+  if (constraints.prefers.length || constraints.avoids.length) {
+    addBlock(root, 'p', '優先道路と回避道路は経路APIの条件にできません。この画面の照合だけです。', 'warn');
+    if (constraints.prefers.length) addBlock(root, 'p', '優先道路：' + briefLabels(constraints.prefers), 'muted');
+    if (constraints.avoids.length) addBlock(root, 'p', '回避道路：' + briefLabels(constraints.avoids), 'muted');
+  }
+}
+function normalizeDrive(row) {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return null;
+  var destination = asText(row.destination).trim();
+  var departAt = asText(row.departAt).trim();
+  var minutes = Number(row.minutes);
+  if (!destination || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(departAt)) return null;
+  if (!isFinite(minutes) || minutes <= 0 || minutes > 1440) return null;
+  return {
+    id: asText(row.id).trim() || nid('drv'),
+    origin: asText(row.origin).trim(),
+    destination: destination,
+    placeId: asText(row.placeId).trim(),
+    ward: asText(row.ward).trim(),
+    departAt: departAt,
+    minutes: Math.round(minutes),
+    routeId: asText(row.routeId).trim(),
+    memo: asText(row.memo).trim(),
+    roadType: ['local','express'].indexOf(row.roadType) >= 0 ? row.roadType : '',
+    toll: row.toll === '' || row.toll == null ? '' : (Number.isFinite(Number(row.toll)) && Number(row.toll) >= 0 ? Math.round(Number(row.toll)) : '')
+  };
+}
+function driveMoment(rec) {
+  var parts = String(rec && rec.departAt || '').split('T');
+  if (parts.length < 2) return null;
+  return parseLocalDateTime(parts[0], parts[1]);
+}
+function medianMinutes(values) {
+  var nums = values.filter(function (n) { return isFinite(n); }).slice().sort(function (a, b) { return a - b; });
+  if (!nums.length) return 0;
+  var mid = Math.floor(nums.length / 2);
+  if (nums.length % 2) return nums[mid];
+  return Math.round((nums[mid - 1] + nums[mid]) / 2);
+}
+function sameDrivePlace(rec, place, destQuery) {
+  // Never fall back to name matching when both records have different stable IDs.
+  if (place && rec.placeId) return String(rec.placeId) === String(place.id);
+  var keys = place ? placeNameKeys(place) : [];
+  var query = foldName(destQuery);
+  if (query && keys.indexOf(query) === -1) keys = keys.concat([query]);
+  if (!keys.length && query) keys = [query];
+  var name = foldName(rec.destination);
+  return !!(name && keys.indexOf(name) !== -1);
+}
+function driveWard(rec) {
+  if (asText(rec.ward).trim()) return asText(rec.ward).trim();
+  var place = placeById(rec.placeId) || findPlaceExact(rec.destination);
+  return place ? asText(place.ward).trim() : '';
+}
+function sameDriveOrigin(rec, requestedOrigin) {
+  var requested = foldName(requestedOrigin);
+  if (!requested) return true;
+  // Unknown starting points must not silently contribute to a known-origin estimate.
+  return !!(rec.origin && foldName(rec.origin) === requested);
+}
+// shell-44: Safe historical time reuse. All essential route conditions must match.
+// Compare the recorded DEPARTURE time band, never the requested arrival band.
+ // With a different/missing route or road type, no automatic departure calculation.
+function estimateDrive(destQuery, arriveAt, place, requestedOrigin, routeId, buffer) {
+  if (!asText(requestedOrigin).trim() || !arriveAt || !isFinite(arriveAt.getTime())) return null;
+  var rows = (Array.isArray(db.drives) ? db.drives : []).filter(function (rec) {
+    var recorded = driveMoment(rec);
+    if (!rec || !recorded || !sameDrivePlace(rec, place, destQuery) ||
+        !sameDriveOrigin(rec, requestedOrigin) ||
+        !['local','express'].includes(rec.roadType) ||
+        String(rec.routeId || '') !== String(routeId || '')) return false;
+    return true;
+  });
+  // Each candidate must have a recorded departure band consistent with the
+  // provisional departure derived from that exact record's minutes.
+  var eligible = rows.filter(function(rec) {
+    var actual = driveMoment(rec);
+    var provisional = new Date(arriveAt.getTime() - (Number(rec.minutes) + buffer) * 60000);
+    // Compare the day the driver would DEPART (which may be the previous day).
+    var tripDayType = (actual.getDay() === 0 || actual.getDay() === 6) ? 'weekend' : 'weekday';
+    var expectedDayType = (provisional.getDay() === 0 || provisional.getDay() === 6) ? 'weekend' : 'weekday';
+    return tripDayType === expectedDayType && timeBand(clockText(actual)) === timeBand(clockText(provisional));
+  });
+  var groups = {};
+  eligible.forEach(function(rec) {
+    var group = rec.roadType + '|' + timeBand(clockText(driveMoment(rec)));
+    if (!groups[group]) groups[group] = [];
+    groups[group].push(rec);
+  });
+  var keys = Object.keys(groups);
+  // Mixed road types or multiple potential departure bands cannot be blended.
+  if (keys.length !== 1) return null;
+  var chosen = groups[keys[0]];
+  var median = medianMinutes(chosen.map(function(rec) { return Number(rec.minutes); }));
+  if (!median || !isFinite(median)) return null;
+  var medianDeparture = new Date(arriveAt.getTime() - (median + buffer) * 60000);
+  if (timeBand(clockText(medianDeparture)) !== keys[0].split('|')[1]) return null;
+  var targetDayType = (medianDeparture.getDay() === 0 || medianDeparture.getDay() === 6) ? 'weekend' : 'weekday';
+  if (chosen.some(function(rec) {var dt = driveMoment(rec);return ((dt.getDay() === 0 || dt.getDay() === 6) ? 'weekend' : 'weekday') !== targetDayType;})) return null;
+  var times = chosen.map(driveMoment).sort(function(a,b){ return a-b; });
+  return {
+    minutes: median,
+    count: chosen.length,
+    from: localISODate(times[0]),
+    to: localISODate(times[times.length-1]),
+    basis: '同一出発地・目的地・ルート・' + (chosen[0].roadType === 'express' ? '高速' : '下道') + '・平日/土日・出発時間帯',
+    low: chosen.length < 3,
+    roadType: chosen[0].roadType,
+    departureBand: keys[0].split('|')[1]
+  };
+}
+function setDriveDetailOpen(open) {
+  var box = $('driveDetail');
+  if (box) box.classList.toggle('hidden', !open);
+}
+function toggleDriveDetail() {
+  var box = $('driveDetail');
+  setDriveDetailOpen(!!(box && box.classList.contains('hidden')));
+}
+function revealDriveMinutes() {
+  var field = $('driveMinutesActual');
+  if (!field || !field.scrollIntoView) return;
+  window.setTimeout(function () {
+    try { field.scrollIntoView({block: 'center'}); } catch (e) { field.scrollIntoView(); }
+  }, 0);
+}
+function fillDriveRoutes(selectedId) {
+  var sel = $('driveRoute');
+  if (!sel) return;
+  var current = selectedId || '';
+  sel.innerHTML = '';
+  var empty = document.createElement('option');
+  empty.value = '';
+  empty.textContent = 'ルート未選択';
+  sel.appendChild(empty);
+  (Array.isArray(db.routes) ? db.routes : []).forEach(function (route) {
+    var opt = document.createElement('option');
+    opt.value = String(route.id);
+    opt.textContent = route.name || route.to || '名称未登録';
+    sel.appendChild(opt);
+  });
+  sel.value = current;
+  if (sel.value !== current) sel.value = '';
+}
+function fillDriveForm(routeId) {
+  var ctx = lastDriveContext || {};
+  var route = (Array.isArray(db.routes) ? db.routes : []).find(function (item) { return item && String(item.id) === String(routeId || ctx.routeId || ''); });
+  var origin = ctx.origin || (route && route.from) || db.origin || '';
+  var destination = ctx.destination || (route && route.to) || '';
+  var departAt = ctx.departAt || '';
+  var parts = departAt.split('T');
+  driveFormPlaceId = ctx.placeId || (route && asText(route.placeId)) || '';
+  if ($('driveOrigin')) $('driveOrigin').value = origin;
+  if ($('driveDest')) $('driveDest').value = destination;
+  if ($('driveDate')) $('driveDate').value = parts[0] || '';
+  if ($('driveTime')) $('driveTime').value = parts[1] || '';
+  fillDriveRoutes(route ? route.id : '');
+  var routeName = route ? (route.name || '名称未登録') : '未選択';
+  var when = departAt ? departAt.replace('T', ' ') : '未定';
+  var summary = $('driveSummary');
+  if (summary) summary.textContent = '引き継ぎ：' + (origin || '出発地未登録') + ' → ' + (destination || '目的地未登録') + ' / 出発 ' + when + ' / ルート ' + routeName;
+  setDriveDetailOpen(!(origin && destination && parts[0] && parts[1]));
+}
+function openDriveForm() {
+  fillDriveForm(lastDriveContext && lastDriveContext.routeId);
+  tab('routes');
+  revealDriveMinutes();
+}
+function saveDriveActual() {
+  var minutes = Number(v('driveMinutesActual'));
+  if (!isFinite(minutes) || minutes <= 0 || minutes > 1440) return setStatus('driveStatus', false, '実際の走行時間を分で入力してください');
+  var destination = v('driveDest');
+  var origin = v('driveOrigin');
+  var dateText = v('driveDate');
+  var timeText = v('driveTime');
+  if (!destination || !origin || !dateText || !timeText || !parseLocalDateTime(dateText, timeText)) {
+    var missingId = !destination ? 'driveDest' : (!origin ? 'driveOrigin' : (!dateText ? 'driveDate' : 'driveTime'));
+    var missingText = !destination ? '目的地を入力してください' : (!origin ? '出発地を入力してください' : (!dateText ? '出発日を入力してください' : (!timeText ? '出発時刻を入力してください' : '出発日時を確認してください')));
+    setDriveDetailOpen(true);
+    setStatus('driveStatus', false, missingText);
+    var focus = $(missingId);
+    window.setTimeout(function () {
+      if (!focus) return;
+      try { focus.scrollIntoView({block: 'center'}); } catch (e) {}
+      try { focus.focus(); } catch (e2) {}
+    }, 0);
+    return;
+  }
+  var place = findPlaceExact(destination);
+  var selectedActualRouteId = v('driveRoute');
+  if (selectedActualRouteId) {
+    var actualRoute = db.routes.find(function(item){return item && String(item.id) === selectedActualRouteId;});
+    if (!actualRoute) return setStatus('driveStatus', false, '登録済みルートが見つかりません。ルートを選び直してください');
+    var sameTo = foldName(actualRoute.to) === foldName(destination) ||
+      (!!place && !!actualRoute.placeId && String(actualRoute.placeId) === String(place.id));
+    var sameFrom = !asText(actualRoute.from).trim() || foldName(actualRoute.from) === foldName(origin);
+    if (!sameTo || !sameFrom) {
+      setDriveDetailOpen(true);
+      return setStatus('driveStatus', false, '出発地または目的地が選択したルートと異なります。正しいルートを選択するか「ルート未選択」にしてください');
+    }
+  }
+  var row = normalizeDrive({
+    origin: origin,
+    destination: place ? place.name : destination,
+    placeId: place ? place.id : (foldName(destination) === foldName((lastDriveContext || {}).destination) ? driveFormPlaceId : ''),
+    ward: place ? asText(place.ward).trim() : ((lastDriveContext && lastDriveContext.ward) || ''),
+    departAt: dateText + 'T' + timeText,
+    minutes: minutes,
+    routeId: v('driveRoute'),
+    memo: v('driveMemo'),
+    roadType: v('driveRoadType'),
+    toll: v('driveToll')
+  });
+  if (!row) return setStatus('driveStatus', false, '記録できません');
+  if (!withSavedChange(function () {
+    if (!Array.isArray(db.drives)) db.drives = [];
+    db.drives.unshift(row);
+  })) return setStatus('driveStatus', false, '保存できませんでした');
+  if ($('driveMinutesActual')) $('driveMinutesActual').value = '';
+  if ($('driveMemo')) $('driveMemo').value = '';
+  if ($('driveRoadType')) $('driveRoadType').value = '';
+  if ($('driveToll')) $('driveToll').value = '';
+  renderDataCounts();
+  renderDrives();
+  replanAfterRecordChange('走行実績を保存しました。');
+  setStatus('driveStatus', true, '走行時間を保存しました。道路種別が未選択の記録は次回の自動計算には使いません。');
+}
+function renderDrives() {
+  var box = $('driveList');
+  if (!box) return;
+  var rows = Array.isArray(db.drives) ? db.drives : [];
+  box.innerHTML = rows.map(function (row) {
+    var when = asText(row.departAt).replace('T', ' ');
+    return '<div class="item"><b>' + esc(row.minutes) + '分</b><p class="muted">' +
+      esc(row.origin || '出発地未登録') + ' → ' + esc(row.destination || '目的地未登録') + '<br>' + esc(when || '日時未登録') + '<br>' + (row.roadType === 'local' ? '下道' : row.roadType === 'express' ? '高速' : '道路種別未登録・学習対象外') + ' / ルート：' + esc((db.routes.find(function(r){return String(r.id) === String(row.routeId);}) || {}).name || (row.routeId ? '削除済みルート' : '未選択')) +
+      '</p><div class="buttons">' + htmlBtn('drive-del', row.id, '削除') + '</div></div>';
+  }).join('') || '<p class="muted">走行時間はまだありません。</p>';
+}
+function deleteDrive(id) {
+  var rows = Array.isArray(db.drives) ? db.drives : [];
+  var row = rows.find(function (item) { return item && String(item.id) === String(id); });
+  if (!row) return;
+  if (!confirm((row.destination || 'この記録') + ' ' + row.minutes + '分を削除しますか？')) return;
+  if (!withSavedChange(function () {
+    db.drives = rows.filter(function (item) { return item && String(item.id) !== String(id); });
+  })) return setStatus('driveStatus', false, '削除できませんでした');
+  renderDrives();
+  replanAfterRecordChange('走行実績を削除しました。計画を再確認してください。');
+  setStatus('driveStatus', true, '走行実績を削除しました。今日の運転も再計算しました');
+}
+function createDrivePlan() {
+  if (!v('todayDest') || !v('todayDate') || !v('todayTime')) {
+    var missing = $('todayResult');
+    if (missing) {
+      clearNode(missing);
+      addBlock(missing, 'p', '目的地と到着日時を入力してください', 'note bad');
+    }
+    return;
+  }
+  if (!parseLocalDateTime(v('todayDate'), v('todayTime'))) {
+    var bad = $('todayResult');
+    if (bad) {
+      clearNode(bad);
+      addBlock(bad, 'p', '日時が正しくありません', 'note bad');
+    }
+    return;
+  }
+  buildToday();
+  // 所要時間がない場合もガイドの地図確認→分数入力の順序を見せる。
+  // 走行時間の入力欄へはガイド内ボタンから移動できる。
+}
+// Decision support uses only locally recorded, comparable journeys. Never infer live traffic.
+function showDrivingSuggestions(root, place, destQuery, origin, arriveAt, departAt, dropoffs) {
+  addBlock(root, 'h3', '運転の判断材料（最終判断は運転者）');
+  var comparisonBand = departAt && typeof departAt.getHours === 'function' && !isNaN(departAt.getTime()) ? timeBand(pad2(departAt.getHours()) + ':' + pad2(departAt.getMinutes())) : '';
+  // Do not compare weekend and weekday journeys as if traffic conditions were equivalent.
+  // Historical records without a valid departure timestamp are excluded.
+  var comparisonDate = departAt && !isNaN(departAt.getTime()) ? departAt : null;
+  var comparisonDayType = comparisonDate ? ((comparisonDate.getDay() === 0 || comparisonDate.getDay() === 6) ? 'weekend' : 'weekday') : '';
+  var base = (Array.isArray(db.drives) ? db.drives : []).filter(function(rec) {
+    var recordedDate = driveMoment(rec);
+    var recordedDayType = recordedDate ? ((recordedDate.getDay() === 0 || recordedDate.getDay() === 6) ? 'weekend' : 'weekday') : '';
+    return !!(comparisonBand && comparisonDayType && asText(origin).trim() && rec &&
+      sameDriveOrigin(rec, origin) && sameDrivePlace(rec, place, destQuery) &&
+      String(rec.routeId || '') === String((lastDriveContext && lastDriveContext.routeId) || '') &&
+      ['local','express'].indexOf(rec.roadType) >= 0 && recordedDayType === comparisonDayType &&
+      timeBand(pad2(recordedDate.getHours()) + ':' + pad2(recordedDate.getMinutes())) === comparisonBand);
+  });
+  addBlock(root, 'p', '比較条件：' + (comparisonDayType === 'weekend' ? '土日' : comparisonDayType === 'weekday' ? '平日' : '曜日不明') + '・同じ出発時間帯。祝日・現在の渋滞は判定していません。', 'muted');
+  var local = base.filter(function(r){ return r.roadType === 'local'; });
+  var express = base.filter(function(r){ return r.roadType === 'express'; });
+  if (local.length >= 2 && express.length >= 2) {
+    var l = medianMinutes(local.map(function(r){return r.minutes;}));
+    var e = medianMinutes(express.map(function(r){return r.minutes;}));
+    var tolls = express.filter(function(r){return r.toll !== '' && Number.isFinite(Number(r.toll));}).map(function(r){return Number(r.toll);});
+    var diff = l - e;
+    addBlock(root, 'p', '下道 ' + l + '分（' + local.length + '件） / 高速 ' + e + '分（' + express.length + '件）', 'line');
+    addBlock(root, 'p', diff > 0 ? '高速は過去実績の中央値で' + diff + '分短いです。料金と到着余裕を比較して選んでください。' : diff < 0 ? '下道は過去実績の中央値で' + (-diff) + '分短いです。高速の利点は確認できません。' : '両方の過去実績の中央値は同じです。料金と道路状況で判断してください。', 'muted');
+    addBlock(root, 'p', '高速料金の記録：' + (tolls.length ? '中央値' + medianMinutes(tolls) + '円（' + tolls.length + '件）' : '未登録') + '。リアルタイム渋滞・現在の規制は未反映。', 'muted');
+  } else {
+    addBlock(root, 'p', '高速・下道の比較は根拠不足です。同じ目的地・出発地・平日/土日・出発時間帯で、各2件以上の記録が必要です（下道' + local.length + '件 / 高速' + express.length + '件）。', 'muted');
+  }
+  addBlock(root, 'h3', '降車場所の候補');
+  var options = (dropoffs || []).filter(function(p) {
+    return p && asText(p.dropoff).trim() && asText(p.status) !== '利用不可';
+  }).slice();
+  if (!options.length) return addBlock(root, 'p', '登録された降車候補がありません。店前を含め停車規制と歩行動線を現地で確認してください。', 'muted');
+  function walkValue(p) {
+    var raw = asText(p.walkMinutes).trim();
+    return /^\d+$/.test(raw) && Number(raw) <= 120 ? Number(raw) : null;
+  }
+  function candidateClass(p) {
+    var walk = walkValue(p);
+    // Confirmation of a location is not confirmation of current legal stopping conditions.
+    if (asText(p.status) !== '現地確認済み') return 2;
+    if (p.crossing !== 'no' || walk === null || walk > 3) return 1;
+    return 0;
+  }
+  options.sort(function(a,b) {
+    var ca = candidateClass(a), cb = candidateClass(b);
+    if (ca !== cb) return ca - cb;
+    var wa = walkValue(a), wb = walkValue(b);
+    return (wa === null ? 999 : wa) - (wb === null ? 999 : wb);
+  });
+  addBlock(root, 'p', '以下は登録済みの候補です。現在の停車規制や安全を確認したうえで運転者が選択してください。', 'muted');
+  options.forEach(function(p) {
+    var walk = walkValue(p);
+    var crossing = p.crossing === 'no' ? '横断なし（記録）' : (p.crossing === 'yes' ? '横断あり' : '横断未確認');
+    var level = candidateClass(p);
+    var label = level === 0 ? '条件が比較的よい候補（停車可否は要確認）' : level === 1 ? '要追加確認の候補' : '未確認候補';
+    addBlock(root, 'p', label + '：' + asText(p.dropoff) + ' / 徒歩' + (walk === null ? '未確認' : walk + '分') + ' / ' + crossing, 'line');
+    if (walk !== null && walk > 3) addBlock(root, 'p', '徒歩3分の目安を超えています。', 'warn');
+    if (asText(p.approach).trim()) addBlock(root, 'p', '記録された進入情報：' + p.approach, 'muted');
+    if (level !== 0) addBlock(root, 'p', '徒歩時間・横断・現地確認状況に不足または注意点があります。', 'warn');
+    addBlock(root, 'p', '停車の合法性・現在の規制・歩行者の安全は現地で再確認してください。', 'muted');
+  });
+  addBlock(root, 'p', '停車禁止・一方通行・歩行者規制を優先し、安全に停車できない場合は無理に降ろさないでください。', 'muted');
+}
+var todayRouteSelection = {key: '', id: ''};
+var planInputSignature = '';
+function currentPlanSignature() {
+  return [v('todayDest'), v('todayOrigin'), v('todayDate'), v('todayTime'), v('todayBuffer')].join('\u001f');
+}
+function clearManualAndSelection(reason) {
+  window.clearTimeout(todayTimer);
+  if ($('todayDrive')) $('todayDrive').value = '';
+  lastTrafficPlan = null;
+  lastDriveContext = null;
+  todayRouteSelection = {key:'', id:''};
+  planInputSignature = currentPlanSignature();
+  var target = $('todayResult');
+  if (target) {
+    clearNode(target);
+    addBlock(target, 'p', reason || '運転条件が変わりました。新しい条件で計算してください。', 'warn');
+  }
+}
+function replanAfterRecordChange(reason) {
+  lastTrafficPlan = null;
+  lastDriveContext = null;
+  if (v('todayDest') && v('todayDate') && v('todayTime')) {
+    buildToday({quiet:true});
+  } else if ($('todayResult')) {
+    clearNode($('todayResult'));
+    addBlock($('todayResult'), 'p', reason || '目的地と到着日時を入力してください。', 'muted');
+  }
+}
+function afterDatasetReplace(reason) {
+  clearManualAndSelection(reason || 'バックアップを復元しました。運転条件と所要時間を改めて確認してください。');
+  refreshAllViews();
+}
+function bindPlanChanges() {
+  var fields = ['todayDest','todayOrigin','todayDate','todayTime','todayBuffer'];
+  planInputSignature = currentPlanSignature();
+  fields.forEach(function(id){
+    var element = $(id);
+    if (!element || element.getAttribute('data-invalidation-bound')) return;
+    element.setAttribute('data-invalidation-bound','1');
+    ['input','change'].forEach(function(eventName){
+      element.addEventListener(eventName, function(){
+        var next = currentPlanSignature();
+        if (next !== planInputSignature) clearManualAndSelection('入力条件が変わったため、以前の所要時間とルート選択を解除しました。最新の条件で再計算します。');
+        scheduleToday();
+      });
+    });
+  });
+}
+function buildToday(opts) {
+  var quiet = !!(opts && opts.quiet);
+  var nextSignature = currentPlanSignature();
+  if (planInputSignature && planInputSignature !== nextSignature) {
+    if ($('todayDrive')) $('todayDrive').value = '';
+    todayRouteSelection = {key:'', id:''};
+    lastTrafficPlan = null;
+  }
+  planInputSignature = nextSignature;
+  var destQuery = v('todayDest');
+  var d = v('todayDate');
+  var t = v('todayTime');
+  if (!destQuery || !d || !t) {
+    if (!quiet) return alert('目的地と到着日時を入力してください');
+    var idle = $('todayResult');
+    if (idle && !destQuery) {
+      clearNode(idle);
+      addBlock(idle, 'p', '目的地と到着日時を入れて、運転プランを作成します。', 'muted');
+    }
+    return;
+  }
+  var arriveAt = parseLocalDateTime(d, t);
+  if (!arriveAt) return alert('日時が正しくありません');
+  var driveRaw = v('todayDrive');
+  var drive = driveRaw === '' ? NaN : Number(driveRaw);
+  var manualOk = isFinite(drive) && drive > 0 && drive <= 1440;
+  var buffer = Number(v('todayBuffer'));
+  if (!isFinite(buffer) || buffer < 0) buffer = 0;
+  var departText = '未登録';
+  var departAt = null;
+  var mode = 'none';
+  var learned = null;
+  var arriveText = pad2(arriveAt.getHours()) + ':' + pad2(arriveAt.getMinutes());
+  var band = timeBand(t);
+  var origin = v('todayOrigin');
+  var m = todayMatches();
+  var place = m.place;
+  var ward = place ? asText(place.ward).trim() : '';
+  var terms = [destQuery.trim().toLowerCase()];
+  if (place) {
+    ['name', 'address', 'ward'].forEach(function (k) {
+      var term = asText(place[k]).trim().toLowerCase();
+      if (term && terms.indexOf(term) === -1) terms.push(term);
+    });
+  }
+  var areaRules = (Array.isArray(db.rules) ? db.rules : []).filter(function (rule) {
+    var area = asText(rule && rule.area).trim();
+    if (!area) return false;
+    if (area === '全方面') return true;
+    if (ward && textHit(area, ward)) return true;
+    return termHit(area, terms);
+  });
+  var activeRules = areaRules.filter(function (rule) { return savedBandOk(rule.time, band); });
+  // 旧ルールには走行道路・進入方向・通過地点の証拠が無い。
+  // 参照表示だけ許可し、ルート採点や交通誘導には一切用いない。
+  var mustRules = [];
+  var preferRules = [];
+  var avoidRules = [];
+  var areas = [];
+  if (ward) areas.push(ward);
+  areaRules.forEach(function (rule) {
+    var area = asText(rule.area).trim();
+    if (area && area !== '全方面' && areas.indexOf(area) === -1) areas.push(area);
+  });
+  var candidates = [];
+  var excluded = [];
+  m.routes.forEach(function (route) {
+    var from = asText(route.from).trim();
+    var routeTime = asText(route.time).trim();
+    if (origin && from && !textHit(from, origin)) {
+      excluded.push({route: route, reason: '出発地が違う'});
+      return;
+    }
+    if (!savedBandOk(routeTime, band)) {
+      excluded.push({route: route, reason: '時間帯が違う（記録：' + routeTime + '）'});
+      return;
+    }
+    candidates.push(route);
+  });
+  candidates.sort(function (a, b) {
+    var gap = missingMustRules(a, mustRules).length - missingMustRules(b, mustRules).length;
+    if (gap) return gap;
+    var ae = asText(a.time).trim() === band ? 0 : 1;
+    var be = asText(b.time).trim() === band ? 0 : 1;
+    return ae - be;
+  });
+  var mapDest = place && asText(place.address).trim() ? placeLabel(place) : (place && asText(place.name).trim() ? place.name : destQuery);
+  var selectionKey = [destQuery, origin, d, t].join('|');
+  if (todayRouteSelection.key !== selectionKey) todayRouteSelection = {key: selectionKey, id: ''};
+  if (opts && opts.selectedRouteId) todayRouteSelection.id = String(opts.selectedRouteId);
+  var selectedRouteId = candidates.length === 1 ? String(candidates[0].id) :
+    (candidates.some(function(r){return String(r.id) === todayRouteSelection.id;}) ? todayRouteSelection.id : '');
+  // With several saved routes, require one selected before applying any historical minutes.
+  learned = candidates.length > 1 && !selectedRouteId ? null :
+    estimateDrive(destQuery, arriveAt, place, origin || db.origin || '', selectedRouteId, buffer);
+  if (manualOk) {
+    mode = 'manual';
+    departAt = new Date(arriveAt.getTime());
+    departAt.setMinutes(departAt.getMinutes() - drive - buffer);
+    departText = departLabel(departAt, d);
+  } else if (learned && learned.minutes > 0) {
+    mode = 'learned';
+    drive = learned.minutes;
+    departAt = new Date(arriveAt.getTime());
+    departAt.setMinutes(departAt.getMinutes() - drive - buffer);
+    departText = departLabel(departAt, d);
+  }
+  lastDriveContext = {
+    origin: origin || db.origin || '',
+    destination: place ? (asText(place.name).trim() || destQuery) : destQuery,
+    placeId: place ? String(place.id) : '',
+    ward: ward,
+    departAt: departAt ? localISODate(departAt) + 'T' + clockText(departAt) : '',
+    routeId: selectedRouteId,
+    mode: mode
+  };
+  var root = $('todayResult');
+  if (!root) return;
+  clearNode(root);
+  var nav = null; // 作成するのは出発時刻・ルート選択案内の後
+  // 複数候補では何も選ばれていない状態を維持する。
+  var choiceStatus = null;
+  var routeChoiceButtons = [];
+  function selectCandidate(route) {
+    var changingRoute = selectedRouteId !== String(route.id);
+    if (changingRoute && $('todayDrive') && v('todayDrive')) {
+      $('todayDrive').value = '';
+      lastTrafficPlan = null;
+    }
+    selectedRouteId = String(route.id);
+    if (lastDriveContext) lastDriveContext.routeId = selectedRouteId;
+    nav.disabled = false;
+    nav.textContent = '選んだルートをGoogleマップで確認';
+    if (choiceStatus) choiceStatus.textContent = '選択中：' + (route.name || '名称未登録') + '。Googleマップ上で実際の経路を必ず確認してください。';
+    routeChoiceButtons.forEach(function (x) {
+      var chosen = String(x.route.id) === selectedRouteId;
+      x.button.textContent = chosen ? '✓ 選択中のルート' : 'このルートを選ぶ';
+      x.button.setAttribute('aria-pressed', chosen ? 'true' : 'false');
+    });
+    todayRouteSelection = {key: selectionKey, id: selectedRouteId};
+    buildToday({quiet:true, selectedRouteId: selectedRouteId});
+  }
+  function openCandidate(route) {
+    if (!route) return;
+    if (candidates.length > 1) selectCandidate(route);
+    var via = pointsFromRoute(route).map(function (p) { return p.place; });
+    if (via.length > MAP_WAYPOINTS) {
+      if (!confirm('登録された経由地は' + via.length + '件ですが、Googleマップへ渡すのは先頭' + MAP_WAYPOINTS + '件です。省略された地点や曲がり方は保証されません。地図で経路を確認しますか？')) return;
+    }
+    maps(mapDest || route.to, origin || route.from, via);
+  }
+  addTimeGrid(root, departText, arriveText, buffer + '分');
+  var nextBox = document.createElement('div');
+  nextBox.className = 'drive-next';
+  root.appendChild(nextBox);
+  addBlock(nextBox, 'strong', '運転前の確認');
+  if (arriveAt.getTime() < Date.now()) addBlock(nextBox, 'p', '指定された到着日時は現在より前です。日付・時間を確認してください。', 'warn');
+  if (mode === 'none') {
+    addBlock(nextBox, 'p', '① 走行時間が未入力です。出発時刻はまだ計算できません。', 'warn');
+    var mapTimeBtn = addBlock(nextBox, 'button', '① Googleマップで所要時間を確認');
+    mapTimeBtn.onclick = function () { maps(mapDest, origin); };
+    var inputTimeBtn = addBlock(nextBox, 'button', '② 確認した走行時間を入力');
+    inputTimeBtn.onclick = function () {
+      var more = $('todayOptions'); if (more) more.open = true;
+      var field = $('todayDrive');
+      if (field) { try { field.scrollIntoView({block:'center'}); } catch (e) {} try { field.focus(); } catch (e2) {} }
+    };
+  } else {
+    addBlock(nextBox, 'p', '① 出発の目安：' + departText + '（' + (mode === 'manual' ? '手入力' : '過去記録') + 'の' + drive + '分 + 余裕' + buffer + '分）', 'muted');
+    if (departAt && departAt.getTime() < Date.now()) addBlock(nextBox, 'p', '計算上の出発時刻を過ぎています。最新の交通状況を確認してください。', 'warn');
+  }
+  if (candidates.length > 1) {
+    addBlock(nextBox, 'p', '② 保存ルートが' + candidates.length + '件あります。使用するものを選択してください。時間の再計算にも反映します。', 'warn');
+    var quick = document.createElement('div'); quick.className = 'route-quick'; nextBox.appendChild(quick);
+    candidates.forEach(function (route) {
+      var b = addBlock(quick, 'button', route.name || '名称未登録', 'route-selector');
+      b.setAttribute('aria-pressed', String(route.id) === selectedRouteId ? 'true' : 'false');
+      if (String(route.id) === selectedRouteId) b.textContent = '✓ 選択中のルート';
+      routeChoiceButtons.push({route:route, button:b});
+      b.onclick = function () { selectCandidate(route); };
+    });
+  } else if (candidates.length === 1) {
+    addBlock(nextBox, 'p', '② 登録済みルート：' + (candidates[0].name || '名称未登録') + '。地図上の道順は必ず確認。', 'muted');
+  } else {
+    addBlock(nextBox, 'p', '② 保存ルートは未選択です。Googleマップで提案された経路を確認してください。', 'muted');
+  }
+  nav = addBlock(nextBox, 'button', candidates.length > 1 && !selectedRouteId ? '先にルートを選択してください' : 'Googleマップで経路を確認', 'primary navstart');
+  nav.disabled = candidates.length > 1 && !selectedRouteId;
+  nav.onclick = function () {
+    if (candidates.length > 1) {
+      var selected = candidates.find(function (r) { return String(r.id) === selectedRouteId; });
+      if (!selected) return alert('ルート候補から1件選択してください。');
+      openCandidate(selected);
+    } else if (candidates.length === 1) openCandidate(candidates[0]);
+    else maps(mapDest, origin);
+  };
+  addBlock(nextBox, 'p', '③ Googleマップで道路・交通規制・所要時間を最終確認してください。URLで経路を表示するだけで、ナビ開始や登録ルートどおりの走行は保証しません。', 'muted');
+  if (!origin) addBlock(nextBox, 'p', '出発地が未入力です。地図側の現在地等を使う場合、計画と違う出発地になっていないか確認してください。', 'warn');
+  // Put the route match status immediately below the departure summary.
+  // The full route cards and explanations remain below for detailed review.
+  if (candidates.length) {
+    addBlock(root, 'p', '保存済みルート：' + candidates.length + '件が今回の条件に一致', 'note good');
+    if (candidates.length > 1) {
+      choiceStatus = addBlock(root, 'p', selectedRouteId ? '選択中：' + (candidates.find(function(r){return String(r.id) === selectedRouteId;}) || {}).name + '。地図で実際の経路を確認してください。' : 'ルート未選択：候補を確認し、1件選んでください。', 'warn route-choice-status');
+      addBlock(root, 'p', 'Googleマップの経路は別途確認してください。保存した曲がり方や道路の通過は保証されません。', 'muted');
+    } else {
+      addBlock(root, 'p', '候補：' + (candidates[0].name || '名称未登録'), 'muted');
+    }
+  } else if (excluded.length) {
+    addBlock(root, 'p', '保存済みルート' + excluded.length + '件は、出発地または時間帯が一致しません。', 'warn');
+    var originMismatch = excluded.find(function (item) {
+      return item.reason === '出発地が違う' && asText(item.route.from).trim();
+    });
+    if (originMismatch) {
+      var useSavedOrigin = addBlock(root, 'button', '保存ルートの出発地で再表示');
+      useSavedOrigin.onclick = function () {
+        var field = $('todayOrigin');
+        if (!field) return;
+        field.value = asText(originMismatch.route.from).trim();
+        buildToday();
+      };
+    }
+  } else {
+    addBlock(root, 'p', 'この目的地の保存済みルートはありません。', 'muted');
+  }
+  var driveLabel = mode === 'none' ? '未入力' : drive + '分';
+  var driveKind = mode === 'learned' ? '過去の走行実績に基づく推定' : (mode === 'manual' ? '手入力' : '未入力');
+  addBlock(root, 'p', '到着日 ' + d + ' / 時間帯 ' + (band || '未登録') + ' / 走行時間（' + driveKind + '）：' + driveLabel, 'muted');
+  if (mode === 'learned') {
+    addBlock(root, 'p', '過去の走行実績に基づく推定です。リアルタイムの交通情報ではありません。到着は保証しません。', 'warn');
+    addBlock(root, 'p', '根拠：' + learned.basis + ' / ' + learned.count + '件 / ' + learned.from + '〜' + learned.to, 'muted');
+    if (learned.low) addBlock(root, 'p', '同条件の記録が3件未満です。参考値として扱い、Googleマップで最新の所要時間を確認してください。', 'warn');
+  } else if (mode === 'manual') {
+    if (learned && learned.minutes > 0) {
+      addBlock(root, 'p', '手入力の' + drive + '分を使っています。同じ条件の実績は' + learned.minutes + '分です。手入力が優先されています。', 'warn');
+      var useLearned = addBlock(root, 'button', '手入力を消して実績を使う');
+      useLearned.onclick = function () {
+        if ($('todayDrive')) $('todayDrive').value = '';
+        buildToday();
+      };
+    } else {
+      addBlock(root, 'p', '入力した分数から逆算しています。交通予測ではありません。', 'warn');
+    }
+  } else {
+    addBlock(root, 'p', candidates.length > 1 && !selectedRouteId ? '先に使用ルートを選んでください。記録が一致すれば時間を参考表示します。' : '条件が揃った走行実績がありません。異なる出発地・ルート・高速/下道・出発時間帯の記録は流用しません。Googleマップで確認した分数を入力してください。', 'warn');
+    var checkMap = addBlock(root, 'button', 'Googleマップで所要時間を確認');
+    checkMap.onclick = function () { maps(mapDest, origin); };
+  }
+  var recordBtn = addBlock(root, 'button', '停車後に走行時間を記録');
+  recordBtn.onclick = function () { openDriveForm(); };
+  var gaps = [];
+  addBlock(root, 'h3', '目的地');
+  if (place) {
+    var addr = asText(place.address).trim();
+    addBlock(root, 'p', (asText(place.name) || destQuery) + (addr ? '　' + addr : ''));
+    if (!addr) gaps.push('住所');
+    if (asText(place.memo).trim()) addBlock(root, 'p', '施設メモ：' + place.memo, 'muted');
+    if (asText(place.dropoffResearch).trim()) renderDropoffResearch(root, place.dropoffResearch);
+  } else {
+    addBlock(root, 'p', destQuery);
+    gaps.push('施設マスター');
+    gaps.push('住所');
+  }
+  if (areas.length) addBlock(root, 'p', '方面：' + areas.join('、'), 'muted');
+  else gaps.push('方面');
+  if (origin) addBlock(root, 'p', '出発地：' + origin, 'muted');
+  else gaps.push('出発地');
+  var dropoffs = m.parking.filter(function (p) { return asText(p.dropoff).trim() && asText(p.status) !== '利用不可'; });
+  showDrivingSuggestions(root, place, destQuery, origin, arriveAt, departAt, dropoffs);
+  var blockedDropoffs = m.parking.filter(function (p) { return asText(p.dropoff).trim() && asText(p.status) === '利用不可'; });
+  if (dropoffs.length) {
+    addBlock(root, 'h3', '乗降場所');
+    dropoffs.forEach(function (p) {
+      addBlock(root, 'p', p.dropoff + '（' + (asText(p.status).trim() || '確認状況：未登録') + '）', 'line');
+    });
+  } else gaps.push('乗降場所');
+  blockedDropoffs.forEach(function (p) {
+    addBlock(root, 'p', '利用不可の記録：' + p.dropoff, 'warn');
+  });
+  if (!candidates.length && excluded.length) {
+    addBlock(root, 'p', '保存済みルートはありますが、今回の出発地・時間帯と一致しません。下の「今回の条件では出していないルート」で理由を確認してください。', 'warn');
+  }
+  if (candidates.length) {
+    addBlock(root, 'h3', candidates.length > 1 ? 'ルート候補の比較' : 'ルート');
+    addBlock(root, 'p', '保存済みルートの経由点は登録情報です。Googleマップが実際にその道を通ることは保証されません。', 'warn');
+    if (candidates.length > 1) addBlock(root, 'p', '複数あるため、必須地点・優先・回避を並べています。自動では1本に決めません。', 'muted');
+  } else gaps.push('ルート');
+  candidates.forEach(function (route) {
+    var card = document.createElement('div');
+    card.className = 'plan-card';
+    root.appendChild(card);
+    var points = pointsFromRoute(route);
+    var mustPts = points.filter(function (p) { return p.priority === 'must'; }).map(function (p) { return p.place; });
+    var preferPts = points.filter(function (p) { return p.priority !== 'must'; }).map(function (p) { return p.place + '（' + turnText(p.turn) + '）'; });
+    var avoids = (Array.isArray(route.avoids) ? route.avoids : []).map(function (a) {
+      return asText(a.road).trim() + (asText(a.reason).trim() ? '（' + a.reason + '）' : '');
+    }).filter(Boolean);
+    var routePrefers = (Array.isArray(route.prefers) ? route.prefers : []).map(function (a) {
+      return asText(a.road).trim() + (asText(a.reason).trim() ? '（' + a.reason + '）' : '');
+    }).filter(Boolean);
+    var avoidRoads = avoids.concat(avoidRules.map(function (rule) { return rule.point + '（ルール）'; }));
+    var preferRoads = routePrefers.concat(preferRules.map(function (rule) { return rule.point + '（ルール）'; }));
+    var missing = missingMustRules(route, mustRules);
+    var routeTime = asText(route.time).trim();
+    addBlock(card, 'p', (route.name || '名称未登録') + ' / ' + (routeTime || '時間帯：未登録'));
+    var compare = [];
+    if (mustPts.length) compare.push('必須 ' + joinLabels(mustPts));
+    if (preferPts.length) compare.push('優先 ' + joinLabels(preferPts));
+    if (preferRoads.length) compare.push('優先道路 ' + joinLabels(preferRoads));
+    if (avoidRoads.length) compare.push('回避 ' + joinLabels(avoidRoads));
+    if (compare.length) addBlock(card, 'p', compare.join(' / '), 'muted');
+    if (origin && !asText(route.from).trim()) addBlock(card, 'p', 'このルートの出発地は未登録です。', 'muted');
+    missing.forEach(function (rule) {
+      addBlock(card, 'p', '必須地点「' + rule.point + '」はこのルートに入っていません。', 'warn');
+    });
+    if (asText(route.memo).trim()) addBlock(card, 'p', '次回の注意：' + route.memo, 'muted');
+    var logs = Array.isArray(route.logs) ? route.logs : [];
+    var lastLog = logs.length ? logs[logs.length - 1] : null;
+    if (lastLog) {
+      addBlock(card, 'p', '指示された道：' + (lastLog.instructed || '未登録'), 'muted');
+      addBlock(card, 'p', '実際に通った道：' + (lastLog.actual || (lastLog.rating === 'keep' ? '指示どおり' : '未登録')), 'muted');
+      addBlock(card, 'p', '実走後の注意：' + (lastLog.next || '未登録'), 'muted');
+    }
+    addSteps(card, points);
+    if (candidates.length > 1) {
+      var selectBtn = addBlock(card, 'button', 'このルートを選ぶ', 'route-selector');
+      selectBtn.setAttribute('aria-pressed', String(route.id) === selectedRouteId ? 'true' : 'false');
+      if (String(route.id) === selectedRouteId) selectBtn.textContent = '✓ 選択中のルート';
+      routeChoiceButtons.push({route: route, button: selectBtn});
+      selectBtn.onclick = function () { selectCandidate(route); };
+    }
+    var btn = addBlock(card, 'button', 'このルートを地図で確認');
+    btn.onclick = function () { openCandidate(route); };
+    var runBtn = addBlock(card, 'button', '停車後に記録');
+    runBtn.onclick = function () { openRunLog(route.id); };
+  });
+  function addParkingGroup(title, rows, gapLabel) {
+    if (!rows.length) {
+      gaps.push(gapLabel);
+      return;
+    }
+    addBlock(root, 'h3', title);
+    rows.forEach(function (p) {
+      var card = document.createElement('div');
+      card.className = 'plan-card';
+      root.appendChild(card);
+      addBlock(card, 'p', asText(p.name).trim() || '駐車場名：未登録');
+      addBlock(card, 'p', '住所：' + (asText(p.location).trim() || asText(p.address).trim() || '未登録'), 'muted');
+      addBlock(card, 'p', priceLine(p) + ' / 満空：未登録', 'muted');
+      if (asText(p.memo).trim()) addBlock(card, 'p', p.memo, 'muted');
+      if (asText(p.location).trim()) {
+        var parkBtn = addBlock(card, 'button', '駐車場へナビ');
+        parkBtn.onclick = function () { openParking(p.id); };
+      }
+    });
+  }
+  var cheap = m.parking.filter(function (p) { return p.mode === 'cheap' || p.mode === 'both'; });
+  var fast = m.parking.filter(function (p) { return p.mode === 'fast' || p.mode === 'both'; });
+  var unknownMode = m.parking.filter(function (p) { return p.mode !== 'cheap' && p.mode !== 'fast' && p.mode !== 'both' && asText(p.name).trim(); });
+  addParkingGroup('駐車場・節約', cheap, '節約駐車場');
+  addParkingGroup('駐車場・急ぎ', fast, '急ぎ駐車場');
+  if (unknownMode.length) {
+    addBlock(root, 'h3', '用途未登録の駐車場');
+    unknownMode.forEach(function (p) {
+      addBlock(root, 'p', p.name + ' / 節約か急ぎかは未登録', 'muted');
+    });
+  }
+  if (activeRules.length) {
+    var ruleDetails = document.createElement('details');
+    ruleDetails.className = 'panel';
+    root.appendChild(ruleDetails);
+    addBlock(ruleDetails, 'summary', '運転ノウハウ（旧形式・参考のみ ' + activeRules.length + '件）');
+    addBlock(ruleDetails, 'p', 'この情報は方面・時間帯による参考表示です。走行する道路・交差点の通過・進入方向を確認していないため、右左折の指示や必須経由地としては扱いません。運転中は画面を操作しないでください。', 'warn');
+    activeRules.slice(0, 12).forEach(function (rule) {
+      addBlock(ruleDetails, 'p', '参考（条件未確認）：' + (asText(rule.point).trim() || '地点未登録') + ' / 登録操作：' + turnText(rule.turn) + ' / 対象方面：' + (asText(rule.area).trim() || '方面未登録'), 'muted');
+    });
+  } else gaps.push('運転ノウハウ');
+  if (gaps.length) {
+    var gapBox = document.createElement('p');
+    gapBox.className = 'gaps';
+    gapBox.textContent = gaps.map(function (g) { return g + '：未登録'; }).join('　');
+    root.appendChild(gapBox);
+  }
+  if (excluded.length) {
+    addBlock(root, 'h3', '今回の条件では出していないルート');
+    excluded.forEach(function (item) {
+      var savedFrom = asText(item.route.from).trim();
+      var savedTime = asText(item.route.time).trim() || 'いつでも';
+      var detail = (item.route.name || '名称未登録') + '：' + item.reason +
+        ' / 登録した出発地：' + (savedFrom || '未登録') + ' / 登録した時間帯：' + savedTime;
+      addBlock(root, 'p', detail, 'muted');
+      // Do not silently substitute a different origin: only use it on explicit tap.
+      if (item.reason === '出発地が違う' && savedFrom) {
+        var selectOrigin = addBlock(root, 'button', 'このルートの出発地で再表示');
+        selectOrigin.onclick = function () {
+          var field = $('todayOrigin');
+          if (!field) return;
+          field.value = savedFrom;
+          buildToday();
+        };
+      }
+    });
+  }
+  if (!quiet) {
+    try { root.scrollIntoView({behavior: 'smooth', block: 'start'}); } catch (e) { root.scrollIntoView(); }
+  }
+}
+var todayTimer = 0;
+function scheduleToday() {
+  window.clearTimeout(todayTimer);
+  todayTimer = window.setTimeout(function () {
+    buildToday({quiet: true});
+  }, 250);
+}
+var FIELD_MEASURE_IDS = [
+  ['todayOrigin', '出発地'],
+  ['todayDest', '目的地'],
+  ['todayDate', '到着日'],
+  ['todayTime', '到着時刻'],
+  ['todayDrive', '走行時間'],
+  ['todayBuffer', '余裕']
+];
+var FIELD_MEASURE_PROPS = ['height', 'min-height', 'max-height', 'padding', 'padding-top', 'padding-bottom', 'margin', 'margin-top', 'margin-bottom', 'line-height', 'appearance', '-webkit-appearance', 'font-size', 'box-sizing', 'border-top-width', 'border-bottom-width', 'display'];
+function fieldPx(n) {
+  if (typeof n !== 'number' || !isFinite(n)) return 'なし';
+  return (Math.round(n * 10) / 10) + 'px';
+}
+function fieldCss(style, prop) {
+  try { return style.getPropertyValue(prop) || ''; }
+  catch (e) { return ''; }
+}
+function fieldRect(el) {
+  var r = el.getBoundingClientRect();
+  return 'rectH=' + fieldPx(r.height) + ' rectW=' + fieldPx(r.width) + ' top=' + fieldPx(r.top);
+}
+function fieldNodeName(node) {
+  var name = node.tagName ? node.tagName.toLowerCase() : 'node';
+  if (node.id) name += '#' + node.id;
+  if (typeof node.className === 'string' && node.className.trim()) {
+    name += '.' + node.className.trim().split(/\s+/).join('.');
+  }
+  return name;
+}
+function fieldAncestors(el) {
+  var lines = [];
+  var node = el.parentElement;
+  var guard = 0;
+  while (node && node !== document.body && guard < 8) {
+    lines.push(fieldNodeName(node) + ' ' + fieldRect(node));
+    if (node.id === 'home') break;
+    node = node.parentElement;
+    guard += 1;
+  }
+  return lines;
+}
+function fieldAuthorRules(el) {
+  var hits = [];
+  function walk(rules, mediaOn) {
+    if (!rules || !mediaOn) return;
+    for (var i = 0; i < rules.length; i++) {
+      var rule = rules[i];
+      if (!rule) continue;
+      if (rule.type === 4 && rule.cssRules) {
+        var on = false;
+        try { on = window.matchMedia(rule.conditionText || '').matches; } catch (e) { on = false; }
+        walk(rule.cssRules, on);
+        continue;
+      }
+      if (rule.type !== 1 || !rule.selectorText || !rule.style) continue;
+      var selector = rule.selectorText;
+      var matched = false;
+      selector.split(',').forEach(function (part) {
+        if (matched) return;
+        var base = part.split('::')[0].trim();
+        if (!base) return;
+        try { if (el.matches(base)) matched = true; } catch (e) {}
+      });
+      if (!matched) continue;
+      var bits = [];
+      FIELD_MEASURE_PROPS.forEach(function (prop) {
+        var val = rule.style.getPropertyValue(prop);
+        if (!val) return;
+        var pri = rule.style.getPropertyPriority(prop);
+        bits.push(prop + ':' + val + (pri ? ' !' + pri : ''));
+      });
+      if (bits.length) hits.push(selector + ' { ' + bits.join('; ') + ' }');
+    }
+  }
+  for (var s = 0; s < document.styleSheets.length; s++) {
+    var rules = null;
+    try { rules = document.styleSheets[s].cssRules; }
+    catch (e) { hits.push('stylesheet unreadable'); continue; }
+    walk(rules, true);
+  }
+  return hits;
+}
+function fieldComputed(el) {
+  var style = getComputedStyle(el);
+  return FIELD_MEASURE_PROPS.map(function (prop) {
+    return prop + '=' + (fieldCss(style, prop) || 'なし');
+  }).join('; ');
+}
+function fieldPseudo(el) {
+  if (!el || (el.type !== 'date' && el.type !== 'time')) return [];
+  var names = ['::-webkit-datetime-edit', '::-webkit-datetime-edit-fields-wrapper', '::-webkit-calendar-picker-indicator'];
+  return names.map(function (name) {
+    var style;
+    try { style = getComputedStyle(el, name); }
+    catch (e) { return name + ' 取得不可'; }
+    if (!style) return name + ' なし';
+    return name + ' height=' + (fieldCss(style, 'height') || 'なし') + ' min-height=' + (fieldCss(style, 'min-height') || 'なし') + ' padding=' + (fieldCss(style, 'padding') || 'なし') + ' line-height=' + (fieldCss(style, 'line-height') || 'なし');
+  });
+}
+function fieldBlock(id, label) {
+  var el = $(id);
+  var lines = ['--- ' + id + ' ' + label + ' ---'];
+  if (!el) {
+    lines.push('要素なし');
+    return lines;
+  }
+  var rect = el.getBoundingClientRect();
+  lines.push('tag=' + el.tagName.toLowerCase() + ' type=' + (el.type || 'なし'));
+  lines.push('input ' + fieldRect(el) + ' offsetH=' + el.offsetHeight + 'px clientH=' + el.clientHeight + 'px');
+  var lab = document.querySelector('label[for="' + id + '"]');
+  if (!lab) lines.push('label なし');
+  else {
+    var lr = lab.getBoundingClientRect();
+    lines.push('label ' + fieldRect(lab) + ' gap=' + fieldPx(rect.top - lr.bottom));
+  }
+  lines.push('ancestors:');
+  fieldAncestors(el).forEach(function (line) { lines.push('  ' + line); });
+  lines.push('computed: ' + fieldComputed(el));
+  fieldPseudo(el).forEach(function (line) { lines.push('pseudo: ' + line); });
+  var rules = fieldAuthorRules(el);
+  lines.push(rules.length ? 'author（スタイルシート順。最終値はcomputed）:' : 'author: なし');
+  rules.forEach(function (line) { lines.push('  ' + line); });
+  return lines;
+}
+function fieldGeometry() {
+  function box(id) {
+    var el = $(id);
+    return el ? el.getBoundingClientRect() : null;
+  }
+  function crosses(a, b) {
+    if (!a || !b) return 'なし';
+    var apart = a.right <= b.left || b.right <= a.left || a.bottom <= b.top || b.bottom <= a.top;
+    return apart ? 'なし' : 'あり';
+  }
+  function stacked(a, b) {
+    if (!a || !b) return 'なし';
+    return a.bottom <= b.top + 0.5 ? '縦' : '横または重なり';
+  }
+  var date = box('todayDate');
+  var time = box('todayTime');
+  var drive = box('todayDrive');
+  var buffer = box('todayBuffer');
+  return [
+    '到着日と到着時刻: ' + stacked(date, time) + ' / 重なり=' + crosses(date, time),
+    '走行時間と余裕: ' + stacked(drive, buffer) + ' / 重なり=' + crosses(drive, buffer)
+  ];
+}
+function buildFieldMeasureReport() {
+  var home = $('home');
+  if (!home) return 'ホームがありません';
+  var wasHidden = home.classList.contains('hidden');
+  var more = $('todayOptions');
+  var moreOpen = !!(more && more.open);
+  var scrollY = window.scrollY || window.pageYOffset || 0;
+  if (wasHidden) home.classList.remove('hidden');
+  if (more) more.open = true;
+  try { window.scrollTo(0, 0); } catch (e) {}
+  try { void home.offsetHeight; } catch (e) {}
+  var lines = [];
+  try {
+    var vv = window.visualViewport;
+    var form = home.querySelector('.panel');
+    lines.push('POLI-ROUTE 入力欄診断');
+    lines.push('値・施設名・住所・運転ルールは含めていません');
+    lines.push('home表示: ' + (wasHidden ? '測定時だけ表示して戻した' : '測定前から表示'));
+    lines.push('innerWidth=' + window.innerWidth);
+    lines.push('innerHeight=' + window.innerHeight);
+    lines.push('visualViewport.width=' + (vv ? vv.width : 'なし'));
+    lines.push('visualViewport.height=' + (vv ? vv.height : 'なし'));
+    lines.push('visualViewport.scale=' + (vv ? vv.scale : 'なし'));
+    lines.push('devicePixelRatio=' + window.devicePixelRatio);
+    lines.push('clientWidth=' + document.documentElement.clientWidth);
+    lines.push('ua=' + navigator.userAgent);
+    lines.push('#home ' + fieldRect(home));
+    lines.push(form ? 'form.panel ' + fieldRect(form) : 'form.panel なし');
+    fieldGeometry().forEach(function (line) { lines.push(line); });
+    FIELD_MEASURE_IDS.forEach(function (item) {
+      fieldBlock(item[0], item[1]).forEach(function (line) { lines.push(line); });
+    });
+  } finally {
+    if (more && !moreOpen) more.open = false;
+    if (wasHidden) home.classList.add('hidden');
+    window.scrollTo(0, scrollY);
+  }
+  return lines.join('\n');
+}
+function measureHomeFields() {
+  var box = $('fieldMeasureText');
+  var text;
+  try { text = buildFieldMeasureReport(); }
+  catch (e) { text = '測定エラー：' + (e && e.message ? e.message : '失敗'); }
+  if (!box) return;
+  box.value = text;
+  box.classList.remove('hidden');
+}
+function copyFieldMeasure() {
+  var box = $('fieldMeasureText');
+  var text = box ? box.value : '';
+  if (!text) {
+    alert('先に「高さを測定」を押してください');
+    return;
+  }
+  if (box) {
+    box.classList.remove('hidden');
+    box.focus();
+    box.select();
+    try { box.setSelectionRange(0, box.value.length); } catch (e) {}
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () {
+      alert('診断結果をコピーしました');
+    }).catch(function () {
+      alert('自動コピーは使えません。表示された結果を長押ししてコピーしてください');
+    });
+    return;
+  }
+  alert('表示された結果を長押ししてコピーしてください');
+}
+function runDiagnostics() {
+  var checks = [];
+  checks.push(['JavaScript起動', true]);
+  checks.push(['施設検索画面', !!$('search') && !!$('list')]);
+  checks.push(['ルート登録画面', !!$('routesList')]);
+  checks.push(['出発逆算画面', !!$('departureResult')]);
+  checks.push(['乗降・駐車画面', !!$('parkingList')]);
+  var storage = false;
+  try {
+    var k = 'poli-route-test';
+    localStorage.setItem(k, 'ok');
+    storage = localStorage.getItem(k) === 'ok';
+    localStorage.removeItem(k);
+  } catch (e) {}
+  checks.push(['端末内保存', storage]);
+  var line = checks.map(function (x) { return (x[1] ? '✓ ' : '✗ ') + x[0]; }).join(' / ');
+  var box = $('diagnostics');
+  if (box) box.textContent = line;
+  return checks.every(function (x) { return x[1]; });
+}
+function initToday() {
+  var iso = localISODate(new Date());
+  if ($('todayDate')) $('todayDate').value = iso;
+  if ($('arrivalDate')) $('arrivalDate').value = iso;
+  syncOriginFields();
+  refreshTodayPlaces();
+  tab('today');
+}
+function boot() {
+  var st = $('state');
+  try {
+    loadStored();
+    bindStatic();
+    safeCall(render);
+    safeCall(renderRoutes);
+    safeCall(renderDraftPoints);
+    safeCall(renderDraftAvoids);
+    safeCall(renderDraftPrefers);
+    safeCall(renderRules);
+    safeCall(renderParking);
+    safeCall(renderDataCounts);
+    safeCall(checkStorageContext);
+    safeCall(refreshUndoRestoreState);
+    safeCall(renderDrives);
+    safeCall(initToday);
+    var diagOk = false;
+    try { diagOk = runDiagnostics(); }
+    catch (e) { diagOk = false; setState('エラー：' + (e && e.message ? e.message : '診断に失敗しました')); }
+    if (st) {
+      var text = st.textContent || '';
+      if (text.indexOf('エラー') === 0 || text.indexOf('読めない') !== -1 || text.indexOf('保存制限') !== -1) {
+        st.classList.remove('hidden');
+      } else if (!diagOk) setState('保存制限あり。設定の診断を確認してください');
+      else setState('');
+    }
+  } catch (e) {
+    setState('エラー：' + (e && e.message ? e.message : '起動に失敗しました'));
+  } finally {
+    if (st) st.setAttribute('data-booted', '1');
+    registerAppCache();
+  }
+}
+function registerAppCache() {
+  if (!('serviceWorker' in navigator)) return;
+  if (location.protocol === 'file:') return;
+  var hadController = !!navigator.serviceWorker.controller;
+  var reloaded = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (!hadController || reloaded) return;
+    reloaded = true;
+    window.location.reload();
+  });
+  navigator.serviceWorker.register('sw.js').catch(function () {});
+}
+boot();
+</script>
+</body>
+</html>

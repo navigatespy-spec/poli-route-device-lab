@@ -1,0 +1,26 @@
+{
+  "name": "POLI-ROUTE 実機検証44",
+  "short_name": "PR 検証44",
+  "description": "検証専用。実走行・後輩への配布には使用しない。",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "id": "./index.html?edition=shell44-lab"
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1220"><title>POLI-ROUTE shell-44｜実機テスト</title><link rel="manifest" href="manifest.webmanifest">
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;color-scheme:light}*{box-sizing:border-box}
+body{background:#f5f7fb;color:#15263b;margin:0;padding:16px 14px 60px;font-size:15px;line-height:1.55}
+main{max-width:620px;margin:0 auto}.hero{background:#142b46;color:#fff;padding:22px;border-radius:18px;margin-bottom:15px}
+h1{font-size:21px;margin:4px 0}h2{font-size:18px;margin:0 0 10px}h3{font-size:15px;margin:0 0 4px}p{margin:7px 0}
+small,.muted{color:#5b6c80}.hero .muted{color:#c8d9ea}a{color:#1768b2}.hero a{color:#fff}
+.card{background:#fff;border:1px solid #dfe6ee;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 2px 8px rgba(18,37,60,.035)}
+button,.btn{background:#1768b2;border:0;color:#fff;padding:12px 15px;border-radius:9px;font-weight:700;font-size:15px;display:inline-block;text-decoration:none;cursor:pointer;min-height:44px}
+.secondary{background:#e5edf8;color:#153c61}.danger{color:#9b2830}.note{border-left:4px solid #eab252;background:#fff9e9;padding:10px 12px;margin:12px 0;border-radius:6px}
+#env>div{display:flex;justify-content:space-between;border-bottom:1px solid #eef1f5;padding:8px 0;gap:15px}#env span:last-child{text-align:right;overflow-wrap:anywhere;font-weight:650}
+.check{padding:13px 0;border-top:1px solid #edf0f5}.check label{display:flex;align-items:flex-start;gap:10px;font-weight:650;cursor:pointer}.check input{width:22px;height:22px;margin:2px 0 0;accent-color:#1768b2;flex-shrink:0}.check .desc{margin-left:32px;font-size:13px;color:#5b6c80}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}.pill{font-size:12px;font-weight:750;border-radius:999px;background:#edf2f8;padding:4px 9px}
+.ok{color:#17734b}.warn{color:#a2610c}.fail{color:#a52835}#trace{white-space:pre-wrap;word-break:break-word;font-size:13px;background:#f4f7fa;border-radius:8px;padding:12px;min-height:72px}
+#progress{font-size:23px;font-weight:750}.steps{padding-left:20px}.steps li{margin:8px 0}
+</style></head><body><main>
+<div class="hero"><div>POLI-ROUTE / shell-44</div><h1>iPhone 実機テスト</h1><p class="muted">本番とは分離した検証版。運転中は操作しない。実際の後輩による運用テストではない。</p><a href="./index.html">← アプリへ戻る</a></div>
+<div class="note"><strong>重要：</strong>このページの自動診断で合格しても、iPhone実機の保存・Googleマップ連携・道路安全性が検証済みになるわけではない。Safariとホーム画面アプリで必ず別々に確認してね。<br>テストには架空の施設名・サンプル情報を使い、実案件の日時や移動先を入力しない。</div>
+<div class="card"><h2>① この端末の環境</h2><div id="env"></div><div class="row" style="margin-top:12px"><button onclick="probe()">保存・環境を再確認</button><button class="secondary" onclick="location.reload()">ページ再読み込み</button></div><p id="trace" aria-live="polite">確認前</p><p class="muted">保存テストはアプリ本体データに触れず、テスト専用のキーだけを使用。ブラウザとホーム画面では保存領域が別になる場合がある。</p></div>
+<div class="card"><h2>② テストの進め方</h2><ol class="steps"><li>このZIPを専用のHTTPS検証URLで公開する。後輩用本番サイトへ上書きしない。</li><li>iPhoneのSafariで検証URLを開き、下の「Safari」項目を実際に確認する。</li><li>Safariの「共有」→「ホーム画面に追加」から検証版を追加する。</li><li>ホーム画面から起動し「ホーム画面」項目を確認する。Safariとデータが一致しなくても、即故障とは断定しない。</li><li>地図は実際に車を走らせず、起動先・目的地・経由地を目視確認する。</li><li>最後に判定シートをコピーして、このチャットに貼り付ける。入力内容・住所・移動履歴はコピーされない。</li></ol><p class="muted">※アプリの旧データを検証版へ自動移動しない。実データの投入は初期テスト合格後に検討する。</p></div>
+<div class="card"><h2>③ チェック項目 <span id="progress">0 / 12</span></h2><p class="muted">押したチェックは同じ保存領域に保持。操作を実際に確認したときだけチェックしてね。</p><div id="checks"></div><div class="row" style="margin-top:12px"><button onclick="copyReport()">判定シートをコピー</button><button class="secondary" onclick="downloadReport()">判定シートを保存</button></div><p id="copyStatus" aria-live="polite"></p></div>
+<div class="card"><h2>④ 追加で確認すること</h2><p>地図アプリは交差点での曲がり方や走行道路を強制できない。降車位置は未確認の情報を推奨しない。検証URLからGoogleマップへ移る際、入力した住所がGoogleに送信されるので実案件の情報は使わない。</p><p>端末・iOSの種類が違えば結果が変わる。このチェックが終わるまでは「実用化合格」にはしない。</p></div>
+</main><script>
+'use strict';
+const RUN_KEY='poli-route-shell44-check-v1';const PROBE_KEY='poli-route-shell44-check-probe-v1';
+const checks=[
+ ['Safari','Safariで検証版が開き、画面が崩れない','画面を縦スクロールし、文字切れ・重なり・押せないボタンがない'],
+ ['Safari','テスト施設を登録し、再読み込み後も残る','アプリの「設定」から架空の施設を1件追加し、Safariを再読み込み'],
+ ['Safari','架空の目的地で出発時刻を計算できる','到着時刻・手入力分数・余裕時間を変えて計算が更新される'],
+ ['Safari','バックアップをファイルに保存し、ファイルアプリで確認','ダウンロードを押すだけでは合格にしない。実際にファイルの存在を見る'],
+ ['Safari','バックアップ復元と取り消しが成功し、件数が一致','復元前後の件数が期待どおり。事前に保存したファイルを使用'],
+ ['Safari','Googleマップに目的地と選択経由地が正しく渡る','外部アプリを起動して画面を確認。運転はしない'],
+ ['ホーム画面','Safariからホーム画面に追加して起動できる','追加した専用アイコンから開き、アドレスバー表示が異なることを確認'],
+ ['ホーム画面','検証用アプリで登録した施設が再起動後も残る','ホーム画面側でも架空施設を登録→終了→再起動で確認'],
+ ['ホーム画面','アプリのバックアップ保存とファイルの存在確認','Safariとは別のデータ領域である場合は別途ファイルを作る'],
+ ['ホーム画面','オフラインでアプリ画面が開き、既存データが見える','一度オンライン起動後、機内モードで開く。外部マップは対象外'],
+ ['ホーム画面','再オンライン時にGoogleマップへ戻れる','オフライン解除後、架空の行き先で外部マップへの接続を確認'],
+ ['安全','実運転前の最終確認を行った','道路ルールは参考、地図のルートは固定できない、運転中は操作しない']
+];
+const $=id=>document.getElementById(id);
+function loadChecks(){try{const a=JSON.parse(localStorage.getItem(RUN_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function setCheck(i,on){const a=loadChecks();a[i]=!!on;try{localStorage.setItem(RUN_KEY,JSON.stringify(a))}catch(e){$('copyStatus').textContent='チェックの保存に失敗しました：'+e.message}update()}
+function update(){const a=loadChecks();$('checks').innerHTML='';checks.forEach((t,i)=>{const row=document.createElement('div');row.className='check';const label=document.createElement('label');const input=document.createElement('input');input.type='checkbox';input.checked=!!a[i];input.addEventListener('change',()=>setCheck(i,input.checked));const title=document.createElement('span');title.textContent='['+t[0]+'] '+t[1];label.append(input,title);row.append(label);const d=document.createElement('div');d.className='desc';d.textContent=t[2];row.append(d);$('checks').append(row)});$('progress').textContent=a.filter(Boolean).length+' / '+checks.length}
+function mode(){return (matchMedia('(display-mode:standalone)').matches||navigator.standalone===true)?'ホーム画面アプリ':'Safari等ブラウザ'}
+async function showEnv(){const app=window.matchMedia&&matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;const rows=[['表示形態',app?'ホーム画面アプリ':'ブラウザ'],['通信',navigator.onLine?'オンライン表示':'オフライン表示'],['ページ方式',location.protocol+'//'],['PWA利用',('serviceWorker'in navigator)?'利用可能':'未対応／無効'],['端末',/iPhone|iPad/.test(navigator.userAgent)?'iPhone/iPad':'その他（操作結果は参考）']];if('serviceWorker'in navigator){try{const r=await navigator.serviceWorker.getRegistration();rows.push(['オフラインキャッシュ',r?'サービスワーカー登録あり':'未登録（初回起動後に再確認）'])}catch(e){rows.push(['オフラインキャッシュ','取得失敗'])}}$('env').innerHTML='';rows.forEach(([a,b])=>{const d=document.createElement('div'),n=document.createElement('span'),v=document.createElement('span');n.textContent=a;v.textContent=b;d.append(n,v);$('env').append(d)})}
+async function probe(){let lines=[];lines.push('モード：'+mode());lines.push('URL：'+location.origin+location.pathname);try{const prev=JSON.parse(localStorage.getItem(PROBE_KEY)||'null');if(prev&&prev.token)lines.push('前回の保存テスト：'+new Date(prev.at).toLocaleString('ja-JP')+' / 前回値を読取成功');else lines.push('前回の保存テスト：記録なし');const token='shell44-'+Math.random().toString(36).slice(2);const record={token,at:Date.now()};localStorage.setItem(PROBE_KEY,JSON.stringify(record));const read=JSON.parse(localStorage.getItem(PROBE_KEY)||'null');lines.push('今回の書込み・読返し：'+(read&&read.token===token?'成功':'失敗'));lines.push('ページを再読み込み→再確認して「前回値を読取成功」と表示されるか確認');}catch(e){lines.push('保存領域エラー：'+e.message)}lines.push('通信：'+(navigator.onLine?'オンラインとして表示':'オフラインとして表示'));$('trace').textContent=lines.join('\n');await showEnv()}
+function makeReport(){const a=loadChecks();const lines=['POLI-ROUTE shell-44 iPhone検証判定シート','確認日時：'+new Date().toLocaleString('ja-JP'),'表示形態：'+mode(),'合格：'+a.filter(Boolean).length+'/'+checks.length,'URL（パスのみ）：'+location.pathname,'','【実操作の確認】'];checks.forEach((t,i)=>lines.push((a[i]?'[確認] ':'[未確認] ')+t[0]+'：'+t[1]));lines.push('','【判定】 '+(a.filter(Boolean).length===checks.length?'全項目チェック済み（実用化合格は別途判断）':'実用化ゲート未通過'),'※施設名・住所・移動履歴を含まない');return lines.join('\n')}
+async function copyReport(){try{await navigator.clipboard.writeText(makeReport());$('copyStatus').textContent='判定シートをコピーしたよ'}catch(e){$('copyStatus').textContent='コピーに失敗：保存ボタンを使ってね'}}
+function downloadReport(){const u=URL.createObjectURL(new Blob([makeReport()],{type:'text/plain;charset=utf-8'}));const a=document.createElement('a');a.href=u;a.download='POLI_ROUTE_shell44_実機テスト結果.txt';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);$('copyStatus').textContent='ファイル保存を開始。ファイルアプリで存在を確認してね'}
+update();probe();if('serviceWorker'in navigator&&location.protocol!=='file:')navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});
+</script></body></html>

@@ -1,0 +1,88 @@
+{
+  "method": "Chromium set_content / in-memory simulated localStorage / no HTTP, no PWA or iPhone testing",
+  "passed": 20,
+  "total": 20,
+  "checks": [
+    {
+      "name": "shell-44 表示",
+      "passed": true
+    },
+    {
+      "name": "旧データと隔離された新保存キー",
+      "passed": true
+    },
+    {
+      "name": "iPhone検証ページへのリンク",
+      "passed": true
+    },
+    {
+      "name": "アプリ起動完了",
+      "passed": true
+    },
+    {
+      "name": "空データでロックなし",
+      "passed": true
+    },
+    {
+      "name": "模擬localStorageへの保存",
+      "passed": true
+    },
+    {
+      "name": "模擬リロード後に架空施設を復元",
+      "passed": true
+    },
+    {
+      "name": "模擬リロード後も保存ロックなし",
+      "passed": true
+    },
+    {
+      "name": "不正な復元データの拒否",
+      "passed": true
+    },
+    {
+      "name": "不正復元後に以前の保存値を保持",
+      "passed": true
+    },
+    {
+      "name": "検証ページに12項目のチェック欄",
+      "passed": true
+    },
+    {
+      "name": "診断画面の書込み・読返し",
+      "passed": true
+    },
+    {
+      "name": "チェック操作で1/12を表示",
+      "passed": true
+    },
+    {
+      "name": "模擬リロードでチェック状態を維持",
+      "passed": true
+    },
+    {
+      "name": "模擬リロードで前回の保存印を確認",
+      "passed": true
+    },
+    {
+      "name": "共有する判定票に施設名を含まない",
+      "passed": true
+    },
+    {
+      "name": "検証ページからアプリへ戻れる",
+      "passed": true
+    },
+    {
+      "name": "Service Workerがオフライン検証ページをキャッシュ対象に含める",
+      "passed": true
+    },
+    {
+      "name": "manifest は検証版名と専用id",
+      "passed": true
+    },
+    {
+      "name": "JavaScriptの未処理例外なし",
+      "passed": true
+    }
+  ],
+  "jsErrors": []
+}
