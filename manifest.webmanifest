@@ -1,6 +1,6 @@
 {
   "name": "POLI-ROUTE UI検証",
-  "short_name": "POLI検証46",
+  "short_name": "POLI検証",
   "description": "検証専用。実走行・後輩への配布には使用しない。",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,13 +10,13 @@
   "lang": "ja",
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "icons/icon-192-v51.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "icons/icon-512-v51.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

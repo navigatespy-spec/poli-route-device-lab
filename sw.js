@@ -1,5 +1,5 @@
-/* POLI-ROUTE device-lab shell-50; only the test PWA scope is affected. */
-var CACHE = 'poli-route-shell-50-device-lab';
+/* POLI-ROUTE device-lab shell-52; only the test PWA scope is affected. */
+var CACHE = 'poli-route-shell-52-device-lab';
 var APP = './index.html';
 function partOfLab(url) {
   if (url.origin !== self.location.origin) return false;
@@ -7,7 +7,7 @@ function partOfLab(url) {
   if (!url.pathname.startsWith(scope.pathname)) return false;
   var file = url.pathname.slice(scope.pathname.length);
   return file === '' || /^(?:index|device-check)\.html$/.test(file) ||
-    file === 'manifest.webmanifest' || /^icons\/icon-(?:180|192|512)\.png$/.test(file);
+    file === 'manifest.webmanifest' || /^icons\/icon-(?:180|192|512)(?:-v51)?\.png$/.test(file);
 }
 self.addEventListener('install', function (event) {
   self.skipWaiting();
