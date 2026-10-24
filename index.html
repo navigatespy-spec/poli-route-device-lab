@@ -267,6 +267,13 @@ button:disabled{background:#e5eaf1!important;color:#9ca9bb!important}
 #todayLegacyDetails summary{font-size:14px;color:#617c9a}
 #home .wizard-hero h2{margin:7px 0;font-size:26px}
 #home .wizard-illustration{height:90px}
+
+/* shell-49: parking search actions; keep original route + localStorage formats. */
+.parking-nearby-actions{display:grid;gap:8px;margin-top:10px}
+.parking-nearby-actions>button{margin:0;min-height:48px;width:100%}
+#home .today-info-card .parking-nearby-actions>button.parking-nearby-primary{background:#1675ed;color:#fff;font-weight:800;box-shadow:0 6px 16px rgba(22,117,237,.14)}
+#home .today-info-card .parking-nearby-actions>button.parking-nearby-copy{background:#f3f7fc;color:#527398;font-size:14px;min-height:40px}
+.parking-nearby-actions>.today-muted{margin:0 4px;color:#71839a}
 </style>
 <style>
 /* shell-48: first-party image assets; behavior and stored data schema unchanged. */
@@ -285,9 +292,16 @@ button:disabled{background:#e5eaf1!important;color:#9ca9bb!important}
 #home [data-today-step="3"] .wizard-field:has(#todayDrive) label{color:#154c86;font-weight:800}
 #home [data-today-step="3"] .today-time-hero{margin-top:14px}
 @media (max-width:360px){.pr-illustration{height:88px!important;min-height:88px} .pr-step-banner{height:70px}}
+
+/* shell-50 / repeat-from-start actions: keep the existing wizard data structures intact */
+.wizard-head-actions{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.wizard-head-actions>span{white-space:nowrap;font-variant-numeric:tabular-nums}
+.wizard-restart,.panel .wizard-restart,#home .wizard-restart{min-height:36px!important;padding:7px 10px!important;border:1px solid #c8dcf6!important;border-radius:11px!important;background:#f1f7ff!important;color:#1768b2!important;font-size:13px!important;font-weight:750!important;line-height:1.2!important;white-space:nowrap!important;width:auto!important;box-shadow:none!important;margin:0!important}
+.wizard-restart:focus-visible{outline:3px solid #86bcff;outline-offset:2px}
+@media(max-width:350px){.wizard-restart,.panel .wizard-restart,#home .wizard-restart{font-size:12px!important;padding:6px 7px!important}.wizard-head-actions{gap:6px}}
 </style></head>
 <body>
-<div class="lab-header"><span>🧪 shell-48 検証用・実運転には使用しない</span><a href="device-check.html">実機チェック ›</a></div>
+<div class="lab-header"><span>🧪 shell-50 検証用・実運転には使用しない</span><a href="device-check.html">実機チェック ›</a></div>
 <header class="top">
 <h1>POLI-ROUTE</h1>
 <button class="iconbtn" id="settingsBtn" onclick="tab('admin')" type="button">設定</button>
@@ -295,7 +309,7 @@ button:disabled{background:#e5eaf1!important;color:#9ca9bb!important}
 <p class="muted" id="state">起動準備中…</p>
 <section class="today-flow" id="home">
 <div class="panel today-flow-shell">
-<div class="wizard-top"><span class="wizard-brand">🚗 今日の運転</span><span id="todayStepCount">1 / 5</span></div>
+<div class="wizard-top"><span class="wizard-brand">🚗 今日の運転</span><div class="wizard-head-actions"><button class="wizard-restart" type="button" onclick="confirmRestartToday()" aria-label="今日の運転の入力を最初からやり直す">↺ 最初から</button><span id="todayStepCount">1 / 5</span></div></div>
 <div class="wizard-progress"><div id="todayProgress" style="width:20%"></div></div>
 <p aria-live="polite" class="today-flow-notice hidden" id="todayFlowNotice" role="status"></p>
 <div class="today-step" data-today-step="1">
@@ -428,14 +442,16 @@ button:disabled{background:#e5eaf1!important;color:#9ca9bb!important}
 <div id="parkingList"></div>
 </div>
 <div class="panel">
-<p class="muted">登録した施設の周辺をPPPark!で検索できます。</p>
-<button onclick="openPPParkNearby('parking')" type="button">🔎 施設周辺の駐車場を探す ↗</button>
-<p class="muted">施設名または住所をPPPark!に渡します。開いた先で場所・利用時間・料金を確認してください。</p>
+<h3>🅿️ この施設の近くで探す</h3>
+<button class="primary" onclick="openParkingSearch('parking','google')" type="button">🗺️ 周辺駐車場を検索 ↗</button>
+<button onclick="openPPParkNearby('parking')" type="button">料金比較はPPPark!（Web） ↗</button>
+<button class="ghost" onclick="copyParkingSearchLocation('parking')" type="button">📋 検索地点をコピー</button>
+<p class="muted">登録した施設名・住所を検索に使用します。PPPark!のiPhoneアプリは検索地点を引き継がない場合があります。</p>
 </div>
 </section>
 <section class="hidden" id="routes">
 <div class="panel route-wizard" id="routeEditor">
-<div class="wizard-top"><div class="wizard-brand">ルートをつくる</div><span id="wizardCounter">1 / 4</span></div>
+<div class="wizard-top"><div class="wizard-brand">ルートをつくる</div><div class="wizard-head-actions"><button class="wizard-restart" type="button" onclick="confirmRestartRoute()" aria-label="ルート保存の入力を最初からやり直す">↺ 最初から</button><span id="wizardCounter">1 / 4</span></div></div>
 <div aria-hidden="true" class="wizard-progress"><div id="wizardProgress"></div></div>
 <p aria-live="polite" class="note hidden" id="routeStatus" role="status"></p>
 <div class="wizard-step" data-wizard-step="1">
@@ -1117,20 +1133,45 @@ function openUrl(url) {
 function buildPPParkSearchUrl(place) {
   var q = asText(place).trim();
   if (!q) return '';
+  // Official free PPPark web button format; iOS app may not inherit the destination.
   return 'https://pppark.com/search/?' + encodeURIComponent(q) + '=';
 }
-function openPPParkNearby(source) {
+function parkingSearchLocation(source) {
   var typed = source === 'parking' ? v('parkPlace') : v('todayDest');
   if (!typed && source === 'parking') typed = v('todayDest');
-  if (!typed) {
-    alert('先に検索したい施設名を入力してね。');
-    return;
-  }
+  typed = asText(typed).trim();
+  if (!typed) return '';
   var place = findPlaceExact(typed);
-  var location = place && asText(place.address).trim() ? asText(place.address).trim() : typed;
-  var url = buildPPParkSearchUrl(location);
-  if (!url) return;
-  openUrl(url);
+  return place && asText(place.address).trim() ? asText(place.address).trim() : typed;
+}
+function buildGoogleParkingSearchUrl(place) {
+  var q = asText(place).trim();
+  if (!q) return '';
+  // Google Maps Search URL; unlike PPPark iOS, search query is officially documented.
+  var url = new URL('https://www.google.com/maps/search/');
+  url.searchParams.set('api', '1');
+  url.searchParams.set('query', '駐車場 ' + q);
+  return url.toString();
+}
+function openParkingSearch(source, provider) {
+  var location = parkingSearchLocation(source);
+  if (!location) return alert('先に目的地を入力してね。');
+  var url = provider === 'pppark' ? buildPPParkSearchUrl(location) : buildGoogleParkingSearchUrl(location);
+  if (url) openUrl(url);
+}
+function openPPParkNearby(source) { return openParkingSearch(source, 'pppark'); }
+function copyParkingSearchLocation(source) {
+  var location = parkingSearchLocation(source);
+  if (!location) return alert('先に目的地を入力してね。');
+  // The PPPark native app may ignore incoming Web search parameters.
+  // Copying lets the user search the same place manually without retyping.
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(location).then(function () {
+      alert('検索地点をコピーしたよ。PPPark!の検索欄に貼り付けてね。');
+    }).catch(function () { window.prompt('検索地点をコピーしてね', location); });
+  } else {
+    window.prompt('検索地点をコピーしてね', location);
+  }
 }
 function maps(to, from, via) {
   if (!to) return alert('目的地を入力してください');
@@ -1513,6 +1554,18 @@ function toggleWizardOption(id){
   var open=el.classList.contains('hidden'); el.classList.toggle('hidden',!open);
   var b=document.querySelector('[aria-controls="'+id+'"]');if(b)b.setAttribute('aria-expanded',open?'true':'false');
   if(open){var inp=el.querySelector('input');if(inp)inp.focus();}
+}
+function confirmRestartRoute(){
+  if(!window.confirm('ルートの入力を最初からやり直す？\n\n作成中の入力だけ消えます。保存済みのルートは残ります。'))return false;
+  clearRouteForm();
+  if($('routeStatus'))$('routeStatus').classList.add('hidden');
+  ['preferBlock','avoidBlock'].forEach(function(id){
+    var el=$(id);if(el)el.classList.add('hidden');
+    var trigger=document.querySelector('[aria-controls="'+id+'"]');
+    if(trigger)trigger.setAttribute('aria-expanded','false');
+  });
+  goRouteStep(1);
+  return true;
 }
 function newRouteWizard(){clearRouteForm();goRouteStep(1);if($('routeStatus'))$('routeStatus').classList.add('hidden');}
 function showSavedRoutes(){var el=$('savedRoutesPanel');if(el&&el.scrollIntoView)el.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -4235,10 +4288,17 @@ function renderTodayFlowArrival() {
   } else {
     addBlock(park,'p','登録された駐車場はありません。','today-muted');
   }
-  // Also show a search action when saved parking exists: users may want alternatives.
-  var search=addBlock(park,'button','🔎 目的地周辺をPPPark!で探す ↗');
-  search.onclick=function(){openPPParkNearby('today');};
-  addBlock(park,'small','目的地（登録住所があれば住所）を外部サイトへ渡します。検索地点・料金・空きはPPPark!で確認。','today-muted');
+  // Destination-based parking discovery; no third-party results are embedded or fabricated.
+  var nearby=addBlock(park,'div','','parking-nearby-actions');
+  var location=parkingSearchLocation('today');
+  if(location) addBlock(nearby,'p','「'+location+'」の近くを探す','today-muted');
+  var search=addBlock(nearby,'button','🅿️ この目的地の周辺駐車場を探す','parking-nearby-primary');
+  search.onclick=function(){openParkingSearch('today','google');};
+  var compare=addBlock(nearby,'button','PPPark!で料金を比較（Web） ↗');
+  compare.onclick=function(){openPPParkNearby('today');};
+  var copy=addBlock(nearby,'button','📋 検索地点をコピー','parking-nearby-copy');
+  copy.onclick=function(){copyParkingSearchLocation('today');};
+  addBlock(nearby,'small','地図検索には目的地を自動入力。PPPark!のiPhoneアプリでは地点が引き継がれない場合があります。料金・空きは検索先で確認。','today-muted');
   var caut=todayFlowCard(root,'⚠️','出発前の注意');
   addBlock(caut,'p','乗降位置は、現在の交通規制や歩行者の安全を確認して判断。施設メモは参考情報です。','today-warning');
 }
@@ -4298,6 +4358,23 @@ function bindTodayFlow() {
   });
 }
 
+function confirmRestartToday(){
+  if(!window.confirm('今日の運転を最初からやり直す？\n\n今回の入力だけ消えます。保存済みルート・走行記録は残ります。'))return false;
+  if($('todayDest'))$('todayDest').value='';
+  if($('todayOrigin'))$('todayOrigin').value=db.origin||'';
+  if($('todayDate'))$('todayDate').value=localISODate(new Date());
+  if($('todayTime'))$('todayTime').value='18:00';
+  if($('todayBuffer'))$('todayBuffer').value='10';
+  if($('todayOriginDetails'))$('todayOriginDetails').open=false;
+  todayFlowChoice='';
+  todayFlowSelectionSignature='';
+  todayFlowDeparture=null;
+  todayRouteSelection={key:'',id:''};
+  clearManualAndSelection('最初から入力してね。');
+  var driveForm=$('runEditor');if(driveForm)driveForm.open=false;
+  goTodayStep(1);
+  return true;
+}
 function initToday() {
   var iso = localISODate(new Date());
   if ($('todayDate')) $('todayDate').value = iso;
