@@ -223,70 +223,114 @@ button:disabled{background:#e5eaf1!important;color:#9ca9bb!important}
 #routes #runEditor,#routes .saved-drives-panel{border-radius:18px}
 #routes #runEditor>summary,#routes .saved-drives-panel>summary{color:#324b6e;font-size:16px}
 #routes .saved-drives-panel:not([open]){padding:9px 14px}
+
+/* shell-46 / 今日の運転 5 ステップ：既存の計算・保存形式は継承 */
+#home .today-flow-shell{padding:20px 16px 20px;border-radius:26px;margin:10px 0;min-height:540px;box-shadow:0 12px 34px rgba(48,97,166,.09)}
+.today-step.hidden{display:none}
+#home .wizard-field{padding:11px 12px 8px;margin:10px 0}
+#home .wizard-field input,#home .wizard-field select{height:49px;min-height:49px;max-height:49px;background:#fff;color:#15263b}
+#home .wizard-field label{display:flex;align-items:center;gap:7px;font-size:15px;color:#263e5f;font-weight:770;margin:0 0 6px}
+#home .wizard-small label{display:block;color:#526d8e;font-size:14px}
+.today-choice-list{display:grid;gap:10px}
+.today-choice{width:100%;text-align:left;background:#fff;border:2px solid #e0eaf6;border-radius:17px;color:#1b3658;padding:16px 14px;min-height:92px;display:block}
+.today-choice[aria-pressed="true"]{background:#eaf4ff;border-color:#2585f1;box-shadow:0 3px 12px rgba(35,121,237,.1)}
+.today-choice b{display:block;font-size:17px;line-height:1.45;margin-bottom:4px}
+.today-choice small{display:block;font-size:13px;line-height:1.5;color:#71869d;font-weight:500}
+.today-choice .choice-mark{float:right;font-size:21px;color:#247deb}
+.today-time-hero{background:linear-gradient(150deg,#e4f3ff,#eff7ff);border:1px solid #d9eafb;border-radius:19px;text-align:center;padding:21px 8px;margin:12px 0}
+.today-time-hero span{display:block;color:#3976bc;font-size:14px;font-weight:700}
+.today-time-hero strong{display:block;color:#143c73;font-size:39px;line-height:1.3;margin:4px 0;font-variant-numeric:tabular-nums}
+.today-time-hero small{display:block;color:#6885a5;font-size:12px;line-height:1.4}
+.today-mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.today-mini-grid>div{background:#f3f8fd;border:1px solid #e7eef7;border-radius:14px;padding:12px 8px;font-size:13px;color:#6984a3;text-align:center}
+.today-mini-grid strong{display:block;font-size:19px;color:#183955;margin:5px 0}
+#home .wizard-add-button{width:100%;min-height:50px;margin:10px 0;color:#156fd1}
+.today-info-card{border:1px solid #e1eaf5;background:#fff;border-radius:18px;margin:12px 0;padding:15px 13px}
+.today-info-card h3{margin:0 0 12px;font-size:16px;color:#1e3d62}
+.today-info-card p{margin:7px 0;font-size:14px;line-height:1.65;color:#354b69;overflow-wrap:anywhere}
+.today-info-card small{color:#6d829c;font-size:12px;line-height:1.5}
+.today-info-card button{width:100%;background:#eaf4ff;color:#126dd2;font-size:14px;font-weight:750;margin-top:7px}
+.today-info-card .today-muted{color:#8899ad}
+.today-info-card .today-warning{color:#93692e;background:#fff7e6;padding:10px;border-radius:10px}
+.today-park-chip{display:inline-block;border-radius:100px;background:#e8f7f0;color:#168457;padding:4px 9px;font-size:12px;font-weight:700;margin:0 4px 6px 0}
+.today-park-chip.fast{background:#f1eaff;color:#8152ba}
+.today-final-row{border-bottom:1px solid #ebf0f5;padding:13px 3px;display:grid;grid-template-columns:27px minmax(0,1fr);gap:9px}
+.today-final-row:last-child{border-bottom:none}
+.today-final-row b{display:block;color:#1b375b;font-size:14px}
+.today-final-row small{display:block;font-size:12px;color:#7588a1;line-height:1.55}
+.today-flow-notice{background:#fff4e3;border:1px solid #f5dfad;color:#805c28;padding:10px 12px;border-radius:12px;font-size:13px;margin:9px 0}
+#home .wizard-bottom button{width:100%;height:55px;min-height:55px;font-weight:770;font-size:17px}
+#home .wizard-bottom .wizard-back{font-size:14px;height:44px;min-height:44px}
+#home .wizard-caution{color:#76889e;font-size:12px}
+#todayLegacyDetails{padding:12px 14px!important;border-radius:15px}
+#todayLegacyDetails summary{font-size:14px;color:#617c9a}
+#home .wizard-hero h2{margin:7px 0;font-size:26px}
+#home .wizard-illustration{height:90px}
 </style>
 </head>
 <body>
-<div class="lab-header"><span>🧪 UI検証版・実運転には使用しない</span><a href="device-check.html">実機チェック ›</a></div>
+<div class="lab-header"><span>🧪 shell-46 検証用・実運転には使用しない</span><a href="device-check.html">実機チェック ›</a></div>
 <header class="top">
 <h1>POLI-ROUTE</h1>
 <button type="button" id="settingsBtn" class="iconbtn" onclick="tab('admin')">設定</button>
 </header>
 <p id="state" class="muted">起動準備中…</p>
 
-<section id="home">
-<div class="panel">
-<h2>今日の運転</h2>
-<label for="todayDest">目的地</label>
-<input id="todayDest" list="placeSuggestions" placeholder="施設名または住所" autocomplete="off">
-<datalist id="placeSuggestions"></datalist>
-<div id="todaySuggest" class="suggest hidden"></div>
-<div class="pair when-narrow">
-<div>
-<label for="todayDate">到着日</label>
-<input id="todayDate" type="date">
-</div>
-<div>
-<label for="todayTime">到着時刻</label>
-<input id="todayTime" type="time" value="18:00">
-</div>
-</div>
-<button type="button" class="primary" onclick="createDrivePlan()">運転プランを作成</button>
-<details id="todayOptions">
-<summary>出発地・余裕・走行時間</summary>
-<label for="todayOrigin">出発地</label>
-<input id="todayOrigin" placeholder="保存した出発拠点" autocomplete="off">
-<label for="todayBuffer">余裕</label>
-<select id="todayBuffer">
-<option value="0">急ぎ 0分</option>
-<option value="10" selected>通常 10分</option>
-<option value="20">余裕 20分</option>
-<option value="30">かなり余裕 30分</option>
-</select>
-<label for="todayDrive">走行時間（分）</label>
-<input id="todayDrive" type="number" min="1" placeholder="実績が足りないときだけ" inputmode="numeric">
-<p class="muted">地図で確認した分数が最優先。過去実績は同じ出発地・目的地・ルート・道路種別・曜日区分・出発時間帯が揃う場合だけ参考計算します。条件が違うときは自動計算しません。</p>
-</details>
-</div>
-<div id="todayResult" class="panel"><p class="muted">目的地と到着日時を入れて、運転プランを作成します。</p></div>
-<div id="planner" class="hidden">
-<input id="origin" placeholder="出発住所" autocomplete="off">
-<input id="destination" placeholder="施設名または住所" autocomplete="off">
-<div id="destSuggest" class="suggest hidden"></div>
-<input id="arrivalDate" type="date">
-<input id="arrivalTime" type="time" value="18:00">
-<input id="driveMinutes" type="number" min="1" inputmode="numeric">
-<select id="bufferMinutes">
-<option value="0">急ぎ 0分</option>
-<option value="10" selected>通常 10分</option>
-<option value="20">余裕あり 20分</option>
-<option value="30">かなり余裕 30分</option>
-</select>
-<button type="button" onclick="calculateDeparture()">出発時刻を計算</button>
-<button type="button" onclick="plannerMap()">Googleマップで所要時間を確認</button>
-<div id="departureResult"></div>
-</div>
-</section>
+<section id="home" class="today-flow">
+  <div class="panel today-flow-shell">
+    <div class="wizard-top"><span class="wizard-brand">🚗 今日の運転</span><span id="todayStepCount">1 / 5</span></div>
+    <div class="wizard-progress"><div id="todayProgress" style="width:20%"></div></div>
+    <p id="todayFlowNotice" class="today-flow-notice hidden" role="status" aria-live="polite"></p>
 
+    <div class="today-step" data-today-step="1">
+      <div class="wizard-hero"><h2>どこへ行く？</h2><p>目的地と到着時間を決めよう</p></div>
+      <div class="wizard-illustration">📍 ┈ 🚙 ┈ 🏁</div>
+      <div class="wizard-field"><label for="todayDest"><span class="dot destination"></span>目的地 <span class="required-mark">必須</span></label>
+        <input id="todayDest" list="placeSuggestions" placeholder="例：東京タワー" autocomplete="off"><datalist id="placeSuggestions"></datalist><div id="todaySuggest" class="suggest hidden"></div>
+      </div>
+      <div class="wizard-field"><label for="todayDate">📅 到着日 <span class="required-mark">必須</span></label><input id="todayDate" type="date"></div>
+      <div class="wizard-field"><label for="todayTime">🕒 到着時刻 <span class="required-mark">必須</span></label><input id="todayTime" type="time" value="18:00"></div>
+      <details class="wizard-small" id="todayOriginDetails"><summary>📍 出発地を変更（必要なとき）</summary>
+        <label for="todayOrigin">出発地</label><input id="todayOrigin" placeholder="いつもの出発地を使用" autocomplete="off">
+      </details>
+      <div class="wizard-bottom"><button type="button" class="primary wizard-next" onclick="goTodayStep(2)">次へ　→</button></div>
+    </div>
+
+    <div class="today-step hidden" data-today-step="2">
+      <div class="wizard-hero"><h2>どのルートで行く？</h2><p>使うルートを選んでね</p></div>
+      <div class="wizard-illustration">🛣️　🚙　📍</div>
+      <div id="todayRouteCards" class="today-choice-list"></div>
+      <div class="wizard-bottom"><button type="button" class="primary wizard-next" onclick="goTodayStep(3)">次へ　→</button><button type="button" class="wizard-back" onclick="goTodayStep(1)">← 戻る</button></div>
+    </div>
+
+    <div class="today-step hidden" data-today-step="3">
+      <div class="wizard-hero"><h2>いつ出発する？</h2><p>地図の所要時間を使って逆算</p></div>
+      <div class="today-time-hero" id="todayTimeHero"><span>出発の目安</span><strong id="todayDepartClock">計算待ち</strong><small id="todayDepartReason">走行時間を確認しよう</small></div>
+      <div class="today-mini-grid"><div>🚗 走行時間<strong id="todayDriveShown">未入力</strong></div><div>⏳ 余裕<strong id="todayBufferShown">10分</strong></div></div>
+      <button type="button" class="wizard-add-button" onclick="todayFlowOpenMap()">🗺️ Googleマップで時間を確認 ↗</button>
+      <div class="wizard-field"><label for="todayDrive">走行時間（分）</label><input id="todayDrive" type="number" min="1" max="1440" inputmode="numeric" placeholder="地図で確認した分数"></div>
+      <div class="wizard-field"><label for="todayBuffer">余裕時間</label><select id="todayBuffer"><option value="0">0分</option><option value="10" selected>10分（通常）</option><option value="20">20分</option><option value="30">30分</option></select></div>
+      <p class="wizard-caution" id="todayTimeCaution">交通状況は自動取得していません。</p>
+      <div class="wizard-bottom"><button type="button" class="primary wizard-next" onclick="goTodayStep(4)">次へ　→</button><button type="button" class="wizard-back" onclick="goTodayStep(2)">← 戻る</button></div>
+    </div>
+
+    <div class="today-step hidden" data-today-step="4">
+      <div class="wizard-hero"><h2>どこで降ろす？</h2><p>車寄せと駐車場を確認</p></div>
+      <div id="todayArrivalCards"></div>
+      <p class="wizard-caution">⚠️ 停車規制・入口・車道横断は現地で確認。未確認情報は運転指示ではありません。</p>
+      <div class="wizard-bottom"><button type="button" class="primary wizard-next" onclick="goTodayStep(5)">次へ　→</button><button type="button" class="wizard-back" onclick="goTodayStep(3)">← 戻る</button></div>
+    </div>
+
+    <div class="today-step hidden" data-today-step="5">
+      <div class="wizard-hero"><h2>確認して出発</h2><p>最後に予定を見直そう</p></div>
+      <div class="wizard-summary" id="todayFinalSummary"></div>
+      <p class="wizard-caution">Googleマップで最新の道順・所要時間・交通規制を確認。右左折・優先道路を強制することはできません。</p>
+      <div class="wizard-bottom"><button type="button" class="primary wizard-next" id="todayOpenNav" onclick="todayFlowOpenMap()">🗺️ Googleマップで経路確認 ↗</button><button type="button" class="wizard-skip" onclick="todayFlowRecord()">📝 停車後に走行時間を記録</button><button type="button" class="wizard-back" onclick="goTodayStep(4)">← 戻る</button></div>
+    </div>
+  </div>
+  <div id="todayResult" class="hidden" aria-hidden="true"></div>
+  <div id="planner" class="hidden"><input id="origin"><input id="destination"><div id="destSuggest" class="suggest hidden"></div><input id="arrivalDate"><input id="arrivalTime"><input id="driveMinutes"><select id="bufferMinutes"><option value="10">10分</option></select><div id="departureResult"></div></div>
+</section>
 <section id="places" class="admin-only hidden">
 <div class="panel">
 <h2>設定</h2>
@@ -3318,7 +3362,7 @@ function showDrivingSuggestions(root, place, destQuery, origin, arriveAt, depart
 var todayRouteSelection = {key: '', id: ''};
 var planInputSignature = '';
 function currentPlanSignature() {
-  return [v('todayDest'), v('todayOrigin'), v('todayDate'), v('todayTime'), v('todayBuffer')].join('\u001f');
+  return [v('todayDest'), v('todayOrigin'), v('todayDate'), v('todayTime')].join('\u001f');
 }
 function clearManualAndSelection(reason) {
   window.clearTimeout(todayTimer);
@@ -3348,7 +3392,7 @@ function afterDatasetReplace(reason) {
   refreshAllViews();
 }
 function bindPlanChanges() {
-  var fields = ['todayDest','todayOrigin','todayDate','todayTime','todayBuffer'];
+  var fields = ['todayDest','todayOrigin','todayDate','todayTime'];
   planInputSignature = currentPlanSignature();
   fields.forEach(function(id){
     var element = $(id);
@@ -4015,12 +4059,225 @@ function runDiagnostics() {
   if (box) box.textContent = line;
   return checks.every(function (x) { return x[1]; });
 }
+
+/* shell-46 five-step presentation / no new persistent fields */
+var todayFlowStep = 1;
+var todayFlowChoice = ''; // route ID or explicit 'maps'
+var todayFlowSelectionSignature = '';
+var todayFlowDeparture = null;
+function todayFlowNotice(msg) {
+  var el = $('todayFlowNotice');
+  if (!el) return;
+  el.textContent = msg || '';
+  el.classList.toggle('hidden', !msg);
+}
+function todayFlowInputsKey() { return [v('todayDest'),v('todayOrigin'),v('todayDate'),v('todayTime')].join('\u001f'); }
+function todayFlowQualified() {
+  var m = todayMatches(), origin=v('todayOrigin') || db.origin || '';
+  // Departure time is not known at step 2. Do not exclude a route using arrival time.
+  var routes = m.routes.filter(function(route){
+    return (!origin || !asText(route.from).trim() || textHit(asText(route.from).trim(),origin));
+  });
+  return {match:m, routes:routes, skipped:m.routes.length-routes.length};
+}
+function todayFlowChosenRoute() {
+  if (!todayFlowChoice || todayFlowChoice==='maps') return null;
+  var pool=todayFlowQualified().routes;
+  return pool.find(function(r){return String(r.id)===todayFlowChoice;})||null;
+}
+function todayFlowSetChoice(id) {
+  todayFlowChoice = String(id);
+  todayFlowSelectionSignature = todayFlowInputsKey();
+  todayFlowDeparture = null;
+  if ($('todayDrive')) $('todayDrive').value = ''; // route-specific time must not transfer
+  var route = todayFlowChosenRoute();
+  if (route) {
+    todayRouteSelection = { key:[v('todayDest'),v('todayOrigin'),v('todayDate'),v('todayTime')].join('|'), id:String(route.id) };
+  } else todayRouteSelection = { key:'', id:'' };
+  renderTodayFlowRoutes();
+  todayFlowNotice('');
+}
+function renderTodayFlowRoutes() {
+  var root=$('todayRouteCards'); if(!root) return;
+  clearNode(root);
+  var state=todayFlowQualified();
+  if (state.skipped) addBlock(root,'p','今回の出発地に合わない保存ルート '+state.skipped+'件は除外','wizard-caution');
+  state.routes.forEach(function(r){
+    var chosen = String(r.id)===todayFlowChoice;
+    var button=addBlock(root,'button','', 'today-choice');
+    button.setAttribute('aria-pressed',chosen?'true':'false');
+    var mark=addBlock(button,'span',chosen?'✓':'○','choice-mark');
+    addBlock(button,'b',r.name||'名称未登録のルート');
+    var pts=pointsFromRoute(r).map(function(x){return x.place;});
+    addBlock(button,'small',pts.length?'経由：'+pts.slice(0,3).join(' → ')+(pts.length>3?' ほか'+(pts.length-3)+'件':''):'経由地の指定なし');
+    var pref=(Array.isArray(r.prefers)?r.prefers:[]).map(function(p){return asText(p.road).trim();}).filter(Boolean);
+    var avoid=(Array.isArray(r.avoids)?r.avoids:[]).map(function(p){return asText(p.road).trim();}).filter(Boolean);
+    if(pref.length || avoid.length)addBlock(button,'small',(pref.length?'🟢 通りたい '+pref.slice(0,2).join('、')+'　':'')+(avoid.length?'⛔ 避けたい '+avoid.slice(0,2).join('、'):''));
+    if(asText(r.time).trim() && r.time!=='いつでも')addBlock(button,'small','🕒 登録時間帯：'+r.time+'（出発時計算後に確認）');
+    button.onclick=function(){todayFlowSetChoice(String(r.id));};
+  });
+  var manual = addBlock(root,'button','','today-choice');
+  manual.setAttribute('aria-pressed',todayFlowChoice==='maps'?'true':'false');
+  addBlock(manual,'span',todayFlowChoice==='maps'?'✓':'○','choice-mark');
+  addBlock(manual,'b','🗺️ Googleマップで選ぶ');
+  addBlock(manual,'small','保存ルートを使わず、地図上で経路を確認');
+  manual.onclick=function(){todayFlowSetChoice('maps');};
+}
+function todayFlowTimeData() {
+  var arrive=parseLocalDateTime(v('todayDate'),v('todayTime'));
+  var buffer=Number(v('todayBuffer')); if(!Number.isFinite(buffer)||buffer<0) buffer=0;
+  var raw=v('todayDrive'), manual=raw!==''?Number(raw):NaN;
+  var manualOk=Number.isFinite(manual)&&manual>0&&manual<=1440;
+  var place=todayMatches().place;
+  var route=todayFlowChosenRoute();
+  var learned=null;
+  if (!manualOk && arrive && (route || todayFlowChoice==='maps')) learned=estimateDrive(v('todayDest'),arrive,place,v('todayOrigin')||db.origin||'',route?String(route.id):'',buffer);
+  var minutes=manualOk?manual:(learned?learned.minutes:null);
+  var depart=arrive && minutes!==null ?new Date(arrive.getTime()-(minutes+buffer)*60000):null;
+  var route=todayFlowChosenRoute();
+  var routeTimeMismatch=!!(route && depart && !savedBandOk(route.time,timeBand(clockText(depart))));
+  return {arrive:arrive,depart:depart,minutes:minutes,buffer:buffer,manualOk:manualOk,learned:learned,invalid:raw!==''&&!manualOk,routeTimeMismatch:routeTimeMismatch};
+}
+function renderTodayFlowTime() {
+  var data=todayFlowTimeData(); todayFlowDeparture=data;
+  if($('todayDepartClock')) $('todayDepartClock').textContent=data.depart?clockText(data.depart):'計算待ち';
+  if($('todayDepartReason')) $('todayDepartReason').textContent=data.depart?(localISODate(data.depart)+' の出発目安'):'所要時間を確認しよう';
+  if($('todayDriveShown')) $('todayDriveShown').textContent=data.minutes!==null ?data.minutes+'分':'未入力';
+  if($('todayBufferShown')) $('todayBufferShown').textContent=data.buffer+'分';
+  if($('todayTimeCaution')) $('todayTimeCaution').textContent=data.routeTimeMismatch?'⚠️ 保存ルートの登録時間帯と出発時刻が違います。ルートを選び直してね。':data.invalid?'1〜1440分の整数で入力してね':(data.manualOk?'Googleマップで確認した手入力の時間を使用。最新の渋滞は自動反映されません。':data.learned?'過去の同条件の走行実績 '+data.learned.count+'件による参考値。現在の渋滞は反映されません。':'実績がないときは、地図で確認した分数を入れてね。');
+  return data;
+}
+function todayFlowMapData() {
+  var m=todayMatches(); var route=todayFlowChosenRoute();
+  var to=m.place && asText(m.place.address).trim()?placeLabel(m.place):(m.place?m.place.name:v('todayDest'));
+  return {to:to,from:v('todayOrigin')||db.origin||'',via:route?pointsFromRoute(route).map(function(p){return p.place;}):[]};
+}
+function todayFlowOpenMap() {
+  if(!v('todayDest')) return todayFlowNotice('目的地を入力してね。');
+  if(todayFlowStep>=2 && !todayFlowChoice) return todayFlowNotice('先にルートを選んでね。');
+  var data=todayFlowMapData();
+  if(data.via.length>MAP_WAYPOINTS){
+    if(!confirm('経由地'+data.via.length+'件のうち、Googleマップへ渡せるのは先頭'+MAP_WAYPOINTS+'件です。省略する地点があります。地図を開きますか？'))return;
+  }
+  maps(data.to,data.from,data.via);
+}
+function todayFlowRecord() {
+  var data=renderTodayFlowTime();
+  var m=todayMatches();var route=todayFlowChosenRoute();
+  lastDriveContext={origin:v('todayOrigin')||db.origin||'',destination:m.place?(m.place.name||v('todayDest')):v('todayDest'),placeId:m.place?String(m.place.id):'',departAt:data.depart?localISODate(data.depart)+'T'+clockText(data.depart):'',routeId:route?String(route.id):'',mode:data.manualOk?'manual':data.learned?'learned':'none'};
+  openDriveForm();
+}
+function todayFlowCard(parent,emoji,title){
+  var card=addBlock(parent,'div','','today-info-card');
+  addBlock(card,'h3',emoji+' '+title);
+  return card;
+}
+function renderTodayFlowArrival() {
+  var root=$('todayArrivalCards'); if(!root)return;
+  clearNode(root);
+  var m=todayMatches(),place=m.place;
+  var drops=m.parking.filter(function(p){return p && asText(p.dropoff).trim() && asText(p.status)!=='利用不可';});
+  var card=todayFlowCard(root,'📍','車寄せ・降車');
+  if (drops.length){
+    drops.forEach(function(p){
+      var walk=asText(p.walkMinutes).trim();
+      addBlock(card,'p',asText(p.dropoff));
+      addBlock(card,'small',(walk&&/^\d+$/.test(walk)?'徒歩'+walk+'分 / ':'徒歩未確認 / ')+(p.crossing==='no'?'横断なし（記録）':p.crossing==='yes'?'車道横断あり':'横断未確認')+' / '+(p.status||'未確認'));
+      if(asText(p.approach).trim())addBlock(card,'p','進入メモ：'+p.approach,'today-muted');
+    });
+  } else addBlock(card,'p','登録なし。安全な降車位置を現地で確認。','today-muted');
+  if(place && asText(place.dropoffResearch).trim()){
+    var research=document.createElement('details');card.appendChild(research);
+    addBlock(research,'summary','📝 降車の調査メモ（未確認）');
+    renderDropoffResearch(research,place.dropoffResearch);
+  }
+  var park=todayFlowCard(root,'🅿️','駐車場');
+  var rows=m.parking.filter(function(p){return asText(p.name).trim() && asText(p.status)!=='利用不可';});
+  if(rows.length){
+    rows.forEach(function(p){
+      var block=addBlock(park,'div','','today-park-entry');
+      var tag = p.mode==='cheap'?'節約':p.mode==='fast'?'急ぎ':p.mode==='both'?'節約・急ぎ':'分類なし';
+      addBlock(block,'span',tag,'today-park-chip '+(p.mode==='fast'?'fast':''));
+      addBlock(block,'p',asText(p.name));
+      addBlock(block,'small',(asText(p.location)||'住所未登録')+' / '+(asText(p.price)!==''?('記録料金'+p.price+'円'):'料金未確認')+' / 空き状況未確認');
+      if(asText(p.memo))addBlock(block,'p',p.memo,'today-muted');
+      if(asText(p.location).trim()){
+        var b=addBlock(block,'button','🗺️ 駐車場を地図で確認');
+        b.onclick=function(){openParking(p.id);};
+      }
+    });
+  } else {
+    addBlock(park,'p','登録された駐車場はありません。','today-muted');
+    var search=addBlock(park,'button','🔎 PPPark! で探す');
+    search.onclick=function(){openUrl('https://pppark.com/');};
+  }
+  var caut=todayFlowCard(root,'⚠️','出発前の注意');
+  addBlock(caut,'p','乗降位置は、現在の交通規制や歩行者の安全を確認して判断。施設メモは参考情報です。','today-warning');
+}
+function todayFlowSummaryRow(root,icon,label,detail){
+  var row=addBlock(root,'div','','today-final-row');
+  addBlock(row,'span',icon);
+  var txt=addBlock(row,'div',''); addBlock(txt,'b',label);addBlock(txt,'small',detail);
+}
+function renderTodayFlowSummary() {
+  var root=$('todayFinalSummary');if(!root)return;clearNode(root);
+  var route=todayFlowChosenRoute();var d=renderTodayFlowTime(),m=todayMatches();
+  todayFlowSummaryRow(root,'📍',v('todayDest'),'到着：'+v('todayDate')+' '+v('todayTime'));
+  todayFlowSummaryRow(root,'🛣️',route?(route.name||'保存ルート'):'Googleマップで選択',route?'経由地 '+pointsFromRoute(route).length+'件':'登録済みルートの経由地は使いません');
+  todayFlowSummaryRow(root,'🕒',d.depart?clockText(d.depart)+' 出発':'出発時刻 未計算','走行'+(d.minutes!==null?d.minutes+'分':'未確認')+' + 余裕'+d.buffer+'分');
+  var drops=m.parking.filter(function(p){return asText(p.dropoff).trim()&&asText(p.status)!=='利用不可';});
+  todayFlowSummaryRow(root,'🚙',drops.length?drops[0].dropoff:'降車場所 未登録',drops.length?(drops[0].status||'要確認'):'現地で確認');
+  var ps=m.parking.filter(function(p){return asText(p.name).trim()});
+  todayFlowSummaryRow(root,'🅿️',ps.length?ps[0].name:'駐車場 未登録',ps.length?'保存情報。満空・料金は要再確認':'現地・検索サイトで確認');
+  var nav=$('todayOpenNav'); if(nav)nav.disabled=!d.depart;
+}
+function goTodayStep(step) {
+  if(step<1||step>5)return false;
+  if(step>=2){
+    if(!v('todayDest')||!v('todayDate')||!v('todayTime')||!parseLocalDateTime(v('todayDate'),v('todayTime'))) {
+      todayFlowNotice('目的地・到着日・到着時刻を確認してね。');return false;
+    }
+    if(todayFlowSelectionSignature!==todayFlowInputsKey()){
+      todayFlowChoice=''; todayFlowSelectionSignature=todayFlowInputsKey();
+      if($('todayDrive'))$('todayDrive').value='';
+    }
+  }
+  if(step>=3 && !todayFlowChoice){todayFlowNotice('使うルートを1つ選んでね。');return false;}
+  if(step>=4){
+    var data=renderTodayFlowTime();
+    if(!data.depart){todayFlowNotice('Googleマップで所要時間を確認して、分数を入力してね。');return false;}
+    if(data.routeTimeMismatch){todayFlowNotice('保存ルートの時間帯と出発時刻が違います。戻ってルートを変更してね。');return false;}
+  }
+  todayFlowNotice('');todayFlowStep=step;
+  document.querySelectorAll('.today-step').forEach(function(el){el.classList.toggle('hidden',Number(el.getAttribute('data-today-step'))!==step);});
+  if($('todayStepCount'))$('todayStepCount').textContent=step+' / 5';
+  if($('todayProgress'))$('todayProgress').style.width=(step*20)+'%';
+  if(step===2)renderTodayFlowRoutes();
+  if(step===3)renderTodayFlowTime();
+  if(step===4)renderTodayFlowArrival();
+  if(step===5)renderTodayFlowSummary();
+  try{window.scrollTo({top:0,behavior:'smooth'});}catch(e){window.scrollTo(0,0);}
+  return true;
+}
+function bindTodayFlow() {
+  ['todayDest','todayOrigin','todayDate','todayTime'].forEach(function(id){
+    var node=$(id);if(!node)return;
+    ['input','change'].forEach(function(type){node.addEventListener(type,function(){todayFlowChoice='';todayFlowSelectionSignature='';});});
+  });
+  ['todayDrive','todayBuffer'].forEach(function(id){
+    var node=$(id);if(!node)return;
+    ['input','change'].forEach(function(type){node.addEventListener(type,renderTodayFlowTime);});
+  });
+}
+
 function initToday() {
   var iso = localISODate(new Date());
   if ($('todayDate')) $('todayDate').value = iso;
   if ($('arrivalDate')) $('arrivalDate').value = iso;
   syncOriginFields();
   refreshTodayPlaces();
+  bindTodayFlow();
+  goTodayStep(1);
   tab('today');
 }
 function boot() {
